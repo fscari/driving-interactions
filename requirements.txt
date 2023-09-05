@@ -1,0 +1,9 @@
+# this works with Python 3.8.10 bit only the 32 bit version
+
+scipy==1.8.1
+numpy==1.19.5
+pillow==9.0.1
+contourpy==1.0.2
+theano
+matplotlib
+pyglet

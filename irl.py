@@ -13,6 +13,7 @@ import numpy as np
 
 th.config.optimizer_verbose = True
 
+
 def run_irl(world, car, reward, theta, data):
     def gen():
         for point in data:
@@ -21,19 +22,20 @@ def run_irl(world, car, reward, theta, data):
                 for cu, uu in zip(c.traj.u, u):
                     cu.set_value(uu)
             yield
+
     r = car.traj.reward(reward)
     g = utils.grad(r, car.traj.u)
     H = utils.hessian(r, car.traj.u)
     I = tt.eye(utils.shape(H)[0])
     reg = utils.vector(1)
     reg.set_value([1e-1])
-    H = H-reg[0]*I
-    L = tt.dot(g, tt.dot(tn.MatrixInverse()(H), g))+tt.log(tn.Det()(-H))
+    H = H - reg[0] * I
+    L = tt.dot(g, tt.dot(tn.MatrixInverse()(H), g)) + tt.log(tn.Det()(-H))
     for _ in gen():
         pass
     optimizer = utils.Maximizer(L, [theta], gen=gen, method='gd', eps=0.1, debug=True, iters=1000, inf_ignore=10)
     optimizer.maximize()
-    print theta.get_value()
+    print(theta.get_value())
 
 
 if __name__ == '__main__':
@@ -57,23 +59,23 @@ if __name__ == '__main__':
     for fname in files:
         with open(fname) as f:
             us, xs = pickle.load(f)
-            for t in range(T, len(xs[0])-T, T):
+            for t in range(T, len(xs[0]) - T, T):
                 point = {
-                    'x0': [xseq[t-1] for xseq in xs],
-                    'u': [useq[t:t+T] for useq in us]
+                    'x0': [xseq[t - 1] for xseq in xs],
+                    'u': [useq[t:t + T] for useq in us]
                 }
                 train.append(point)
     theta = utils.vector(5)
     theta.set_value(np.array([1., -50., 10., 10., -60.]))
-    r = 0.1*feature.control()
+    r = 0.1 * feature.control()
     for lane in the_world.lanes:
-        r = r + theta[0]*lane.gaussian()
+        r = r + theta[0] * lane.gaussian()
     for fence in the_world.fences:
-        r = r + theta[1]*lane.gaussian()
+        r = r + theta[1] * lane.gaussian()
     for road in the_world.roads:
-        r = r + theta[2]*road.gaussian(10.)
-    r = r + theta[3]*feature.speed(1.)
+        r = r + theta[2] * road.gaussian(10.)
+    r = r + theta[3] * feature.speed(1.)
     for car in the_world.cars:
-        if car!=the_car:
-            r = r + theta[4]*car.traj.gaussian()
+        if car != the_car:
+            r = r + theta[4] * car.traj.gaussian()
     run_irl(the_world, the_car, r, theta, train)

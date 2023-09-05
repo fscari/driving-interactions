@@ -1,13 +1,15 @@
 import pickle
 import subprocess
-from pylab import *
+import numpy as np
 import csv
 
 dt = 0.1
 
+
 def ls(pattern):
     output = subprocess.check_output("ls {}".format(pattern), shell=True).splitlines()
     return output
+
 
 def load(filename):
     with open(filename) as f:
@@ -15,11 +17,13 @@ def load(filename):
     u, x = ret
     uh, ur = u
     xh, xr = x
-    t = arange(len(xh))*dt
-    return {'uh': asarray(uh), 'ur': asarray(ur), 'xh': asarray(xh), 'xr': asarray(xr), 't': t}
+    t = np.arange(len(xh)) * dt
+    return {'uh': np.asarray(uh), 'ur': np.asarray(ur), 'xh': np.asarray(xh), 'xr': np.asarray(xr), 't': t}
+
 
 def isempty(data):
-    return all([len(y)==0 for y in data.values()])
+    return all([len(y) == 0 for y in data.values()])
+
 
 csvs = [[], [], []]
 
@@ -68,11 +72,11 @@ for world in ['world{}'.format(i) for i in range(6)]:
                 'robot_steer': uh[0],
                 'robot_acceleration': uh[1],
             }
-            csvs[scenario[world]-1].append(point)
+            csvs[scenario[world] - 1].append(point)
 
 for i, rows in enumerate(csvs):
-    with open('csvs/scenario{}.csv'.format(i+1), 'w') as f:
-        writer = csv.DictWriter(f, fieldnames = [
+    with open('csvs/scenario{}.csv'.format(i + 1), 'w') as f:
+        writer = csv.DictWriter(f, fieldnames=[
             'user',
             'trajectory',
             'scenario',
@@ -98,7 +102,7 @@ opts = ls('data/world*-opt.pickle')
 for opt in opts:
     world = opt.split('/')[1].split('-')[0]
     with open('csvs/opt{}-{}.csv'.format(scenario[world], condition[world]), 'w') as f:
-        writer = csv.DictWriter(f, fieldnames = [
+        writer = csv.DictWriter(f, fieldnames=[
             'scenario',
             'condition',
             'time',
