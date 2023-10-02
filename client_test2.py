@@ -17,25 +17,14 @@ vehicle_list = carla_world.get_actors().filter('vehicle.*')
 for vehicle in vehicle_list:
     if vehicle.type_id == 'vehicle.hapticslab.nissannpc':
         # nestedcar_carla = vehicle
-        nestedcar_carla = joaninit.Vehicle(vehicle)
+        nestedcar_carla = joaninit.Vehicle(vehicle, carla_map)
     else:
-        humancar_carla = joaninit.Vehicle(vehicle)
-humancar_transform = humancar_carla.get_transform()
-humancar_velocities = humancar_carla.get_velocity()
-humancar_velocity = math.sqrt(humancar_velocities.x**2 + humancar_velocities.y**2)
-nestedcar_transform = nestedcar_carla.get_transform()
-nested_velocities = nestedcar_carla.get_velocity()
-nested_velocity = math.sqrt(nested_velocities.x**2 + nested_velocities.y**2)
-humancar_carla_waypoint = carla_world.get_map().get_waypoint(humancar_carla.get_location(),project_to_road=True, lane_type=(carla.LaneType.Driving))
-nestedcar_carla_waypoint = carla_world.get_map().get_waypoint(nestedcar_carla.get_location(),project_to_road=True, lane_type=(carla.LaneType.Driving))
-
+        humancar_carla = joaninit.Vehicle(vehicle, carla_map)
 # Saddigh
 dt = 0.01
 dyn = dynamics.CarDynamics(dt)
-humancar = car.UserControlledCar(dyn, [humancar_transform.location.x, humancar_transform.location.y, math.radians(humancar_transform.rotation.yaw), humancar_velocities.x, humancar_velocities.y, humancar_carla.get_angular_velocity().z], color='yellow')
-nestedcar = car.NestedOptimizerCar(dyn, [nestedcar_transform.location.x, nestedcar_transform.location.y, math.radians(nestedcar_transform.rotation.yaw), nested_velocities.x, nested_velocities.y, nestedcar_carla.get_angular_velocity().z], color='yellow')
-# humancar = car.UserControlledCar(dyn, [humancar_transform.location.x, humancar_transform.location.y, math.radians(humancar_transform.rotation.yaw), humancar_velocity, ], color='yellow')
-# nestedcar = car.NestedOptimizerCar(dyn, [nestedcar_transform.location.x, nestedcar_transform.location.y, math.radians(nestedcar_transform.rotation.yaw), nested_velocity], color='yellow')
+humancar = car.UserControlledCar(dyn, [humancar_carla.location.x, humancar_carla.location.y, math.radians(humancar_carla.rotation.yaw), humancar_carla.velocities.x, humancar_carla.velocities.y, humancar_carla.angular_velocity.z], color='yellow')
+nestedcar = car.NestedOptimizerCar(dyn, [nestedcar_carla.location.x, nestedcar_carla.location.y, math.radians(nestedcar_carla.rotation.yaw), nestedcar_carla.velocities.x, nestedcar_carla.velocities.y, nestedcar_carla.angular_velocity.z], color='yellow')
 experiment_env = world.World()
 experiment_env.cars.append(humancar)
 experiment_env.cars.append(nestedcar)
@@ -226,17 +215,3 @@ ax2.grid(False)
 ax2.invert_yaxis()
 ax2.legend()
 plt.show()
-
-
-# plt.plot(x_positions_sadcar, y_positions_sadcar, color='red', label='sadcar', linewidth=2)
-# plt.plot(x_positions_nestedcar[:-1], y_positions_nestedcar[:-1], color='green', label='nestedcar', linewidth=2)
-# plt.legend()
-# plt.show()
-#
-# plt.figure(figsize=(10,6))
-# plt.plot(left_fence_x, left_fence_y, color='black') #label='Left Fence')
-# plt.plot(right_fence_x1, right_fence_y1, color='black') # label='Right Fence Segment 1'
-# plt.plot(right_fence_x2, right_fence_y2, color='black') # label='Right Fence Segment 2'
-# plt.plot(right_fence_x3, right_fence_y3, color='black') # label='Right Fence Segment 3'
-# # Plotting the middle dashed line
-# plt.axhline(0, color='black', linestyle='--', xmin=41/410, xmax=310/410)  # the xmin and xmax values are normalized
