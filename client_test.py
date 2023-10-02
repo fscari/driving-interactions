@@ -16,10 +16,10 @@ carla_map = carla_world.get_map()
 vehicle_list = carla_world.get_actors().filter('vehicle.*')
 for vehicle in vehicle_list:
     if vehicle.type_id == 'vehicle.hapticslab.nissannpc':
-        # nestedcar_carla = vehicle
-        nestedcar_carla = joaninit.Vehicle(vehicle)
+        nestedcar_carla = vehicle
+        # nestedcar_carla = joaninit.Vehicle(vehicle)
     else:
-        humancar_carla = joaninit.Vehicle(vehicle)
+        humancar_carla = vehicle
 humancar_transform = humancar_carla.get_transform()
 humancar_velocities = humancar_carla.get_velocity()
 humancar_velocity = math.sqrt(humancar_velocities.x**2 + humancar_velocities.y**2)
