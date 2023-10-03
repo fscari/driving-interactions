@@ -1,18 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedcar, y_positions_nestedcar, theta, start_time, end_time):
+def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedcar, y_positions_nestedcar, theta, start_time, end_time, title):
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns
     # Left fence coordinates
-    left_fence_x = [51, 410]
+    left_fence_x = [367, 800]
     left_fence_y = [-3.5, -3.5]
     # Right fence coordinates
-    right_fence_x1 = [51, 330]
+    right_fence_x1 = [367, 550]
     right_fence_y1 = [3.5, 3.5]
-    right_fence_x2 = [330, 350]
+    right_fence_x2 = [550, 600]
     right_fence_y2 = [3.5, 0]
-    right_fence_x3 = [350, 410]
+    right_fence_x3 = [600, 800]
     right_fence_y3 = [0, 0]
     # Plotting
     ax1.plot(left_fence_x, left_fence_y, color='black') #label='Left Fence')
@@ -73,7 +73,6 @@ def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedca
     ax2.grid(False)
     ax2.invert_yaxis()
     ax2.legend()
-    plt.show()
-
-    filename = '_'.join([str(round(t, 2)) for t in theta]) + '.png'
+    filename = title + '.png'
     plt.savefig(filename)
+    plt.show()

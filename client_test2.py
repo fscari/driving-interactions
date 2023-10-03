@@ -5,6 +5,8 @@ from controller_init import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 
+experiment_nr = 1
+title = "Experiment Nr: " + str(experiment_nr) + "; Iteration Nr: "
 # Connect to the CARLA server
 client = carla.Client('131.180.28.182', 2000)  # Use the correct IP address and port
 client.set_timeout(10.0)  # Set a timeout value
@@ -17,6 +19,7 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 dt = 0.01
 theta = [5, -46.271, 90.15, 8.531, -100.604]
 T = 10
+theta.append(T)
 human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta)
 nested_car_origin = nested_car
 
@@ -27,26 +30,26 @@ throttle = 0
 print("theta: ")
 print(theta)
 
-times = []
-x_positions_human_car = []
-y_positions_human_car = []
-x_positions_nested_car = []
-y_positions_nested_car = []
-x_positions_saddigh_car = []
-y_positions_saddigh_car = []
-steering_input = []
-number_of_experiments = 10
+number_of_experiments = 2
 start_time = time.time()
 nested_car_origin.control(steering, throttle)
 done = False
 
 for i in range(number_of_experiments):
+    times = []
+    x_positions_human_car = []
+    y_positions_human_car = []
+    x_positions_nested_car = []
+    y_positions_nested_car = []
+    x_positions_saddigh_car = []
+    y_positions_saddigh_car = []
+    steering_input = []
     input("Press Enter to start the experiment:")
     if done:
         nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
     running = True
     first = True
-    cntdwn(client, carla_world)
+    cntdwn(carla_world, human_car_carla)
     time.sleep(5)
     while running:
         if nested_car_carla.get_location().x == 0:
@@ -98,7 +101,8 @@ for i in range(number_of_experiments):
             y_positions_saddigh_car.append(nested_car.x[1])
             steering_input.append(steer)
             times.append(time.time() - start_time)
-
-end_time = time.time()
-theta.append(T)
-pltng_scene(x_positions_human_car, y_positions_human_car, x_positions_nested_car, y_positions_nested_car, theta, start_time, end_time)
+    end_time = time.time()
+    title = title + str(i)
+    pltng_scene(x_positions_human_car, y_positions_human_car, x_positions_nested_car, y_positions_nested_car, theta, start_time, end_time, title)
+    title = title[:-1]
+print("Experiment finished!")

@@ -16,9 +16,9 @@ def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set):
     experiment_env.cars.append(humancar)
     experiment_env.cars.append(nestedcar)
     experiment_env.cars[1].human = experiment_env.cars[0]
-    clane1 = lane.StraightLane([50, -1.75], [460, -1.75], 3.5)
-    clane2 = lane.StraightLane([50, 1.75], [330, 1.75], 3.5)
-    fakelane = lane.StraightLane([400, 1.75], [460, 1.75], 3.5)  # 381
+    clane1 = lane.StraightLane([367, -1.75], [800, -1.75], 3.5)
+    clane2 = lane.StraightLane([367, 1.75], [550, 1.75], 3.5)
+    fakelane = lane.StraightLane([600, 1.75], [800, 1.75], 3.5)
     experiment_env.lanes += [clane1, clane2]
     experiment_env.roads += [clane1]
     experiment_env.fences += [clane1.shifted(-1), clane2.shifted(1), fakelane.shifted(0.5)]
