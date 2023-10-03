@@ -2,16 +2,16 @@ import dynamics, lane, car_class, feature, world
 import math
 
 
-def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set):
+def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
     dyn = dynamics.CarDynamics(dt)
     humancar = car_class.UserControlledCar(dyn, [human_car_carla.get_location().x, human_car_carla.get_location().y,
                                            math.radians(human_car_carla.get_rotation().yaw), human_car_carla.get_velocities().x,
                                            human_car_carla.get_velocities().y, human_car_carla.get_angular_velocities().z],
-                                     color='yellow')
+                                     color='yellow', T=T)
     nestedcar = car_class.NestedOptimizerCar(dyn, [nested_car_carla.get_location().x, nested_car_carla.get_location().y,
                                              math.radians(nested_car_carla.get_rotation().yaw), nested_car_carla.get_velocities().x,
                                              nested_car_carla.get_velocities().y, nested_car_carla.get_angular_velocities().z],
-                                       color='blue')
+                                       color='blue', T=T)
     experiment_env = world.World()
     experiment_env.cars.append(humancar)
     experiment_env.cars.append(nestedcar)

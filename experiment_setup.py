@@ -20,7 +20,7 @@ dt = 0.01
 theta = [5, -46.271, 90.15, 8.531, -100.604]
 T = 10
 theta.append(T)
-human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta)
+human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
 nested_car_origin = nested_car
 
 hand_brake = False
