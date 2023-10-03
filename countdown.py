@@ -6,7 +6,7 @@ def cntdwn(world, human_car_carla):
 # Set the countdown duration and start the countdown
     initial_y = -2
     duration = 5.0
-    initial_x = human_car_carla.location.x + 10
+    initial_x = human_car_carla.location.x + 15
     for i in range(5):
         current_y = initial_y + i
         current_time = duration - i

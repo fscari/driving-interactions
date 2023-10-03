@@ -17,7 +17,10 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 
 # Saddigh
 dt = 0.01
-theta = [5, -46.271, 90.15, 8.531, -100.604]
+# theta = [lanes, fances, road, speed, trajectoy.h]
+theta = [3, -60, 90, 8.5, -100.5]
+# theta = [3, -60, 90, 8.5, -100.5]
+# theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
 T = 10
 theta.append(T)
 human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
@@ -49,14 +52,14 @@ for i in range(number_of_experiments):
         nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
     running = True
     first = True
-    cntdwn(carla_world, human_car_carla)
-    time.sleep(5)
+    # cntdwn(carla_world, human_car_carla)
+    # time.sleep(5)
     while running:
         if nested_car_carla.get_location().x == 0:
             print("Cars were destroyed, waiting for new condition...")
             done = True
             running = False
-        elif nested_car_carla:
+        elif nested_car_carla.get_location().x >= 367:
             start_time = time.time()
             nested_car.control(steering, throttle)
             print("------------------------------")
@@ -74,10 +77,10 @@ for i in range(number_of_experiments):
             else:
                 brake = 0
             # Set control commands
-            throttle = throttle  # Set the desired throttle value (0 to 1)
-            steer = steering  # Set the desired steering value (-1 to 1)
-            brake = brake  # Set the desired brake value (0 to 1)
-            control = carla.VehicleControl(throttle=throttle, steer=steer, brake=brake, hand_brake=hand_brake)
+            # throttle = throttle  # Set the desired throttle value (0 to 1)
+            # steer = steering  # Set the desired steering value (-1 to 1)
+            # brake = brake  # Set the desired brake value (0 to 1)
+            control = carla.VehicleControl(throttle=throttle, steer=steering, brake=brake, hand_brake=hand_brake)
             # Apply the control commands to the vehicle
             nested_car_carla.vehicle.apply_control(control)
 
@@ -93,14 +96,14 @@ for i in range(number_of_experiments):
             if sleep_time > 0:
                 time.sleep(sleep_time)
 
-            x_positions_human_car.append(human_car_carla.get_location().x)
-            y_positions_human_car.append(human_car_carla.get_location().y)
-            x_positions_nested_car.append(nested_car_carla.get_location().x)
-            y_positions_nested_car.append(nested_car_carla.get_location().y)
-            x_positions_saddigh_car.append(nested_car.x[0])
-            y_positions_saddigh_car.append(nested_car.x[1])
-            steering_input.append(steer)
-            times.append(time.time() - start_time)
+        x_positions_human_car.append(human_car_carla.get_location().x)
+        y_positions_human_car.append(human_car_carla.get_location().y)
+        x_positions_nested_car.append(nested_car_carla.get_location().x)
+        y_positions_nested_car.append(nested_car_carla.get_location().y)
+        x_positions_saddigh_car.append(nested_car.x[0])
+        y_positions_saddigh_car.append(nested_car.x[1])
+        steering_input.append(steering)
+        times.append(time.time() - start_time)
     end_time = time.time()
     title = title + str(i)
     pltng_scene(x_positions_human_car, y_positions_human_car, x_positions_nested_car, y_positions_nested_car, theta, start_time, end_time, title)
