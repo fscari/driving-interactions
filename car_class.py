@@ -2,9 +2,8 @@ import numpy as np
 import utils
 from trajectory import Trajectory
 import math
-import time
 
-class Car2(object):
+class Car(object):
     def __init__(self, dyn, x0, color='yellow', T=10):
         self.data0 = {'x0': x0}
         self.bounds = [(-1., 1.), (-1., 1.)]
@@ -48,9 +47,9 @@ class Car2(object):
         pass
 
 
-class UserControlledCar(Car2):
+class UserControlledCar(Car):
     def __init__(self, *args, **vargs):
-        Car2.__init__(self, *args, **vargs)
+        Car.__init__(self, *args, **vargs)
         self.bounds = [(-1., 1.), (-1., 1.)]
         self.follow = None
         self.fixed_control = None
@@ -77,13 +76,13 @@ class UserControlledCar(Car2):
             self.u = u
 
     def reset(self):
-        Car2.reset(self)
+        Car.reset(self)
         self.fixed_control = self._fixed_control
 
 
-class NestedOptimizerCar(Car2):
+class NestedOptimizerCar(Car):
     def __init__(self, *args, **vargs):
-        Car2.__init__(self, *args, **vargs)
+        Car.__init__(self, *args, **vargs)
         self.bounds = [(-math.pi, math.pi), (-1, 1)]
 
     @property
@@ -96,7 +95,7 @@ class NestedOptimizerCar(Car2):
         self.traj_h = Trajectory(self.T, self.human.dyn)
 
     def move(self, nested_car_carla, human_car):
-        Car2.move(self, nested_car_carla)
+        Car.move(self, nested_car_carla)
         new_state = [human_car.get_location().x, human_car.get_location().y,
                      math.radians(human_car.get_rotation().yaw), human_car.get_velocity(),
                      human_car.get_velocities().y, human_car.get_angular_velocities().z]

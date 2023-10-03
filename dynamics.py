@@ -1,7 +1,5 @@
 import numpy as np
-import theano as th
 import theano.tensor as tt
-from scipy import interpolate
 
 
 class Dynamics(object):

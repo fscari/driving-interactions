@@ -74,3 +74,6 @@ def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedca
     ax2.invert_yaxis()
     ax2.legend()
     plt.show()
+
+    filename = '_'.join([str(round(t, 2)) for t in theta]) + '.png'
+    plt.savefig(filename)
