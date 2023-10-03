@@ -2,7 +2,7 @@ import dynamics, lane, car2, feature, world
 import math
 
 
-def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_setted):
+def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set):
     dyn = dynamics.CarDynamics(dt)
     humancar = car2.UserControlledCar(dyn, [human_car_carla.get_location().x, human_car_carla.get_location().y,
                                            math.radians(human_car_carla.get_rotation().yaw), human_car_carla.get_velocities().x,
@@ -22,7 +22,7 @@ def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_setted):
     experiment_env.lanes += [clane1, clane2]
     experiment_env.roads += [clane1]
     experiment_env.fences += [clane1.shifted(-1), clane2.shifted(1), fakelane.shifted(0.5)]
-    theta = theta_setted
+    theta = theta_set
     r_h = experiment_env.simple_reward([nestedcar.traj], theta) + 100. * feature.bounded_control(humancar.bounds)
     r_r = experiment_env.simple_reward(nestedcar, theta, speed=22)
     experiment_env.cars[1].rewards = (r_h, r_r)

@@ -45,6 +45,7 @@ def hessian(f, x, constants=[]):
 
 class NestedMaximizer(object):
     def __init__(self, f1, vs1, f2, vs2):
+        start_time = time.time()
         # Redirect stdout to a dummy stream
         sys.stdout = open(os.devnull, 'w')
         self.f1 = f1
@@ -65,14 +66,13 @@ class NestedMaximizer(object):
 
         def f1_and_df1(x0):
             return self.func1(*[x0[a:b] for a, b in self.sz1])
-
         self.f1_and_df1 = f1_and_df1
         J = jacobian(grad(f1, vs2), vs1)
         H = hessian(f1, vs1)
         g = grad(f2, vs1)
         self.df2 = -tt.dot(J, ts.solve(H, g)) + grad(f2, vs2)
+        # np.save('/home/fede/PycharmProjects/driving-interactions/df2.npy', self.df2)
         self.func2 = th.function([], [-self.f2, -self.df2])
-
         def f2_and_df2(x0):
             for v, (a, b) in zip(self.vs2, self.sz2):
                 v.set_value(x0[a:b])

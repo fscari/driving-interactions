@@ -2,7 +2,7 @@ import numpy as np
 import utils
 from trajectory import Trajectory
 import math
-
+import time
 
 class Car2(object):
     def __init__(self, dyn, x0, color='yellow', T=10):
