@@ -55,28 +55,7 @@ def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedca
     ax1.invert_yaxis()
     ax1.legend()
 
-    total_time = int((end_time-start_time)*100)
-    ratio = int(len(filtered_x_positions_nestedcar)/total_time)
-    # filtered_x_positions_nestedcar_pertime = np.zeros(total_time)
-    # filtered_y_positions_nestedcar_pertime = np.zeros(total_time)
-    # filtered_x_positions_humancar_pertime = np.zeros(total_time)
-    # filtered_y_positions_humancar_pertime = np.zeros(total_time)
-
-    # Calculate approximate sample rate
-    total_duration = end_time - start_time
-    delta_t = total_duration / len(filtered_x_positions_nestedcar)
-
-    # Use delta_t to create original and desired time arrays
-    original_time = np.arange(0, len(filtered_x_positions_nestedcar) * delta_t, delta_t)
-    desired_time = np.arange(0, len(filtered_x_positions_nestedcar) * delta_t, 1)
-
-    # Interpolate
-    filtered_x_positions_nestedcar_pertime = np.interp(desired_time, original_time, filtered_x_positions_nestedcar)
-    filtered_y_positions_nestedcar_pertime = np.interp(desired_time, original_time, filtered_y_positions_nestedcar)
-    filtered_x_positions_humancar_pertime = np.interp(desired_time, original_time, filtered_x_positions_humancar)
-    filtered_y_positions_humancar_pertime = np.interp(desired_time, original_time, filtered_y_positions_humancar)
-    # ax2.figure(figsize=(10,6))
-
+# Scatterplot for velocities
     ax2.plot(left_fence_x, left_fence_y, color='black')  # label='Left Fence')
     ax2.plot(right_fence_x0, right_fence_y0, color='black')  # label='Right Fence Segment 0'
     ax2.plot(right_fence_x1, right_fence_y1, color='black')  # label='Right Fence Segment 1'
@@ -88,8 +67,12 @@ def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedca
     ax2.axhline(0, color='black', linestyle='--', xmin=41 / 410,
                 xmax=310 / 410)  # the xmin and xmax values are normalized
 
-    ax2.scatter(filtered_x_positions_nestedcar_pertime[:], filtered_y_positions_nestedcar_pertime[:], color='green', label='nestedcar', linewidth=2)
-    ax2.scatter(filtered_x_positions_humancar_pertime[:], filtered_y_positions_humancar_pertime[:], color='red', label='humancar', linewidth=2)
+    ax2.scatter(filtered_x_positions_nestedcar[::2], filtered_y_positions_nestedcar[::2], color='green',
+                label='nestedcar', s=5)
+    ax2.scatter(filtered_x_positions_humancar[::2], filtered_y_positions_humancar[::2], color='red',
+                label='nestedcar', s=5)
+
+
     # Additional plot settings
     ax2.set_xlabel('X Position')
     ax2.set_ylabel('Y Position')

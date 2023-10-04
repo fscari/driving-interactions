@@ -5,7 +5,8 @@ from controller_init import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 
-experiment_nr = 3
+experiment_nr = 1
+number_of_iterations = 2
 title = "Experiment Nr: " + str(experiment_nr) + "; Iteration Nr: "
 
 # Connect to the CARLA server
@@ -20,7 +21,6 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
 # theta = [3, -60, 90, 8.5, -100.5]
-# theta = [3, -60, 90, 8.5, -100.5]
 theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
 T = 10
 theta.append(T)
@@ -34,12 +34,12 @@ throttle = 0
 print("theta: ")
 print(theta)
 
-number_of_experiments = 2
+
 start_time = time.time()
 nested_car_origin.control(steering, throttle)
 done = False
 
-for i in range(number_of_experiments):
+for i in range(number_of_iterations):
     times = []
     x_positions_human_car = []
     y_positions_human_car = []
@@ -110,7 +110,7 @@ for i in range(number_of_experiments):
             x_positions_saddigh_car.append(nested_car.x[0])
             y_positions_saddigh_car.append(nested_car.x[1])
             steering_input.append(steering)
-            times.append(time.time() - loop_time)
+            times.append(carla_world.get_snapshot().timestamp.elapsed_seconds)
     end_time = time.time()
     title = title + str(i)
     pltng_scene(x_positions_human_car, y_positions_human_car, x_positions_nested_car, y_positions_nested_car, theta,
