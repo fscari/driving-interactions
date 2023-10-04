@@ -56,16 +56,17 @@ for i in range(number_of_experiments):
     start = False
     # cntdwn(carla_world, human_car_carla)
     # time.sleep(5)
-    while running:
-        if nested_car_carla.get_location().x == 0:
-            print("Cars were destroyed, waiting for new condition...")
-            done = True
-            running = False
-        if nested_car_carla.get_velocities().x > 0 and nested_car_carla.get_location().x > 50:
+
+  while running:
+        if nested_car_carla.get_velocities().x > 0 and nested_car_carla.get_location().x > 0:
             if start is False:
                 start_time = time.time()
                 loop_time = start_time
                 start = True
+            if nested_car_carla.get_location().x == 0:
+                print("Cars were destroyed, waiting for new condition...")
+                done = True
+                running = False
             elif nested_car_carla.get_location().x >= 367:
                 loop_time = time.time()
                 nested_car.control(steering, throttle)
@@ -96,8 +97,7 @@ for i in range(number_of_experiments):
                 print("input: ")
                 print(steering, throttle)
                 print("state: ")
-                print(nested_car_carla.get_location().x, nested_car_carla.get_location().y,
-                      nested_car_carla.get_rotation().yaw, nested_car_carla.get_velocity())
+                print(nested_car_carla.get_location().x, nested_car_carla.get_location().y, nested_car_carla.get_rotation().yaw, nested_car_carla.get_velocity())
 
                 sleep_time = dt - (time.time() - loop_time)
                 if sleep_time > 0:
