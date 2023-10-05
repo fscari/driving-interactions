@@ -6,7 +6,7 @@ import math
 class Car(object):
     def __init__(self, dyn, x0, color='yellow', T=10):
         self.data0 = {'x0': x0}
-        self.bounds = [(-1., 1.), (-1., 1.)]
+        self.bounds = [(-math.pi, math.pi), (-1, 1)]
         self.T = T
         self.dyn = dyn
         self.traj = Trajectory(T, dyn)
@@ -50,7 +50,7 @@ class Car(object):
 class UserControlledCar(Car):
     def __init__(self, *args, **vargs):
         Car.__init__(self, *args, **vargs)
-        self.bounds = [(-1., 1.), (-1., 1.)]
+        self.bounds = [(-math.pi, math.pi), (-1, 1)]
         self.follow = None
         self.fixed_control = None
         self._fixed_control = None

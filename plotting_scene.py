@@ -55,21 +55,33 @@ def pltng_scene(x_positions_humancar, y_positions_humancar, x_positions_nestedca
     ax1.invert_yaxis()
     ax1.legend()
 
+    left_fence_x1 = [360, 800]
+
 # Scatterplot for velocities
-    ax2.plot(left_fence_x, left_fence_y, color='black')  # label='Left Fence')
-    ax2.plot(right_fence_x0, right_fence_y0, color='black')  # label='Right Fence Segment 0'
+    ax2.plot(left_fence_x1, left_fence_y, color='black')  # label='Left Fence')
+    # ax2.plot(right_fence_x0, right_fence_y0, color='black')  # label='Right Fence Segment 0'
     ax2.plot(right_fence_x1, right_fence_y1, color='black')  # label='Right Fence Segment 1'
     ax2.plot(right_fence_x2, right_fence_y2, color='black')  # label='Right Fence Segment 2'
     ax2.plot(right_fence_x3, right_fence_y3, color='black')  # label='Right Fence Segment 3'
-    ax2.plot(middle_fence_l_x, middle_fence_l_y, color='black')  # label='Middle Fence Left'
-    ax2.plot(middle_fence_r_x, middle_fence_r_y, color='black')  # label='Middle Fence Right'
+    # ax2.plot(middle_fence_l_x, middle_fence_l_y, color='black')  # label='Middle Fence Left'
+    # ax2.plot(middle_fence_r_x, middle_fence_r_y, color='black')  # label='Middle Fence Right'
+
+    nested_closest_position = min(filtered_x_positions_nestedcar, key=lambda x: abs(x - 367.0))
+    nested_index_of_367 = filtered_x_positions_nestedcar.index(nested_closest_position)
+    filtered_x_positions_nestedcar1 = filtered_x_positions_nestedcar[nested_index_of_367:]
+    filtered_y_positions_nestedcar1 = filtered_y_positions_nestedcar[nested_index_of_367:]
+
+    human_closest_position = min(filtered_x_positions_humancar, key=lambda x: abs(x - 367.0))
+    human_index_of_367 = filtered_x_positions_humancar.index(human_closest_position)
+    filtered_x_positions_humancar1 = filtered_x_positions_humancar[human_index_of_367:]
+    filtered_y_positions_humancar1 = filtered_y_positions_humancar[human_index_of_367:]
     # Plotting the middle dashed line
     ax2.axhline(0, color='black', linestyle='--', xmin=41 / 410,
                 xmax=310 / 410)  # the xmin and xmax values are normalized
 
-    ax2.scatter(filtered_x_positions_nestedcar[::2], filtered_y_positions_nestedcar[::2], color='green',
+    ax2.scatter(filtered_x_positions_nestedcar1[::2], filtered_y_positions_nestedcar1[::2], color='green',
                 label='nestedcar', s=5)
-    ax2.scatter(filtered_x_positions_humancar[::2], filtered_y_positions_humancar[::2], color='red',
+    ax2.scatter(filtered_x_positions_humancar1[::2], filtered_y_positions_humancar1[::2], color='red',
                 label='nestedcar', s=5)
 
 

@@ -69,13 +69,14 @@ for i in range(number_of_experiments):
                 running = False
             elif nested_car_carla.get_location().x >= 367:
                 loop_time = time.time()
-                nested_car.control(steering, throttle)
+                # nested_car.control(steering, throttle)
                 print("------------------------------")
                 if first:
                     first = False
                     nested_car.optimizer = nested_car_origin.optimizer
                 else:
                     nested_car.control(steering, throttle)
+                nested_car.control(steering, throttle)
                 u = nested_car.traj.u[0].get_value()
                 # Set control commands
                 steering = u[0]

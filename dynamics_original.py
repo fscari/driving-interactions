@@ -16,6 +16,49 @@ class Dynamics(object):
         return self.f(x, u)
 
 
+# class CarDynamics(Dynamics):
+#     ## old Sadigh'smodel
+#     # def __init__(self, dt=0.1, ub=[(-3., 3.), (-1., 1.)], friction=1.):
+#     #     def f(x, u):
+#     #         return tt.stacklists([
+#     #             x[3] * tt.cos(x[2]),
+#     #             x[3] * tt.sin(x[2]),
+#     #             x[3] * u[0],
+#     #             u[1] - x[3] * friction
+#     #         ])
+#     #
+#     #     Dynamics.__init__(self, 4, 2, f, dt)
+#
+#     ## new model
+#     def __init__(self, dt=0.1, ub=[(-3., 3.), (-1., 1.)], friction=1.):
+#         # Linearized Longitudinal Dynamics
+#         resistance = [0.000203, 0.04799443, 0.00035266]
+#
+#         def longitudinal_dynamics(v):
+#             # Linearized resistance model
+#             res = resistance[0] * v ** 2 + resistance[1] * v + resistance[2]
+#             return -res
+#
+#         def f(x, u):
+#             # x[0] - x position
+#             # x[1] - y position
+#             # x[2] - yaw angle
+#             # x[3] - velocity
+#
+#             # u[0] - steering angle
+#             # u[1] - acceleration command
+#
+#             # Linearized longitudinal acceleration
+#             a_long = u[1] + longitudinal_dynamics(x[3])
+#
+#             # Bicycle Model for lateral motion and yaw rate
+#             dx = x[3] * tt.cos(x[2])
+#             dy = x[3] * tt.sin(x[2])
+#             dpsi = x[3] * u[0]
+#
+#             return tt.stacklists([dx, dy, dpsi, a_long])
+#         Dynamics.__init__(self, 4, 2, f, dt)
+
 #new new model
 class CarDynamics(Dynamics):
     def __init__(self, dt=0.1, Cf=1200, Cr=1200, m=1500, Iz=2000, a=1.4, b=1.6, ub=[(-3., 3.), (-1., 1.)], friction=1.):
@@ -41,6 +84,8 @@ class CarDynamics(Dynamics):
         def longitudinal_dynamics(v):
             # Linearized resistance model
             resistance_force = resistance[0] * v ** 2 + resistance[1] * v + resistance[2]
+            # max_accel = max_acceleration - resistance_force / self.m
+            # min_accel = min_acceleration - resistance_force / self.m
             return resistance_force
         def f(x, u):
             # x[0] - x position
@@ -68,6 +113,10 @@ class CarDynamics(Dynamics):
 
             # Calculate the interpolated effect of the steering curve on yaw rate
             steering_angle_deg = np.rad2deg(u.get_value()[0])
+            steering_effect = steering_interpolator(steering_angle_deg)
+
+            # Modify yaw rate calculation with steering curve effect
+            # dr = (1 / self.Iz) * (self.a * self.Cf * u[0] - self.b * self.Cr * beta) * steering_effect
 
             dr = (1 / self.Iz) * (self.a * self.Cf * u[0] - self.b * self.Cr * beta)
 

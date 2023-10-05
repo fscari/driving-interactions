@@ -8,7 +8,7 @@ from get_vehicles import gt_vhcl
 
 
 experiment_nr = 1
-number_of_iterations = 5
+number_of_iterations = 2
 title = "Experiment Nr: " + str(experiment_nr) + "; Iteration Nr: "
 
 # Connect to the CARLA server
@@ -22,9 +22,8 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 # Saddigh
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
-theta =  [1, -60, 90, 8.5, -100.5]
-# theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
-# theta = [100., -500., 10., 10., -60.]
+# theta = [3, -60, 90, 8.5, -100.5]
+theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
 T = 10
 theta.append(T)
 human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
@@ -32,14 +31,15 @@ nested_car_origin = nested_car
 
 hand_brake = False
 running = True
-
+steering = 0
+throttle = 0
+brake = 0
 print("theta: ")
 print(theta)
 
-steering = 0
-throttle = 0
+
 start_time = time.time()
-nested_car_origin.control(0.00154, 0.22730086326599164)
+nested_car_origin.control(steering, throttle)
 done = False
 target_speed = 16.67  # m/s
 for i in range(number_of_iterations):
@@ -54,15 +54,10 @@ for i in range(number_of_iterations):
     input("Press Enter to start the experiment:")
     if done:
         nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
-        print(nested_car_carla.get_location().y)
     running = True
     first = True
     start = False
     human_cruise_flag = True
-    nested_cruise_flag = True
-    steering = 0
-    throttle = 0
-    brake = 0
     # cntdwn(carla_world, human_car_carla)
     # time.sleep(5)
     while running:
@@ -70,18 +65,34 @@ for i in range(number_of_iterations):
             print("Cars were destroyed, waiting for new condition...")
             done = True
             running = False
-        if human_car_carla.get_velocities().x > 0 and human_car_carla.get_location().x >= 50:
-            if start is False:
-                start_time = time.time()
-                loop_time = start_time
-                start = True
-            if nested_car_carla.get_location().x >= 367:
+        else:
+            if nested_car_carla.get_location().x <= 367 and human_car_carla.get_location().x <= 367:
+                if start is False:
+                    start_time = time.time()
+                    loop_time = start_time
+                    start = True
+                current_speed = nested_car_carla.get_velocities().x
+                # Calculate the error (difference between current speed and target speed)
+                error = target_speed - current_speed
+                # Adjust throttle and brake based on the error
+                if error > 0:
+                    # Error is positive, accelerate
+                    throttle = min(1.0, error / 5.0)  # Adjust the division factor for smoother acceleration
+                elif error < 0:
+                    # Error is negative, brake
+                    brake = min(1.0, -error / 5.0)  # Adjust the division factor for smoother braking
+                # Apply control inputs
+                nested_car_carla.vehicle.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=0.0))
+                human_car_carla.vehicle.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=0.0))
+                carla_world.tick()
+            elif nested_car_carla.get_location().x >= 367:
                 loop_time = time.time()
-                nested_car.control(steering, throttle)
+                # nested_car.control(steering, throttle)
                 print("------------------------------")
                 if first:
                     first = False
                     nested_car.optimizer = nested_car_origin.optimizer
+                    nested_car.control(steering, throttle)
                 else:
                     nested_car.control(steering, throttle)
                 u = nested_car.traj.u[0].get_value()
@@ -96,6 +107,11 @@ for i in range(number_of_iterations):
                 # Apply the control commands to the vehicle in Carla
                 control = carla.VehicleControl(throttle=throttle, steer=steering, brake=brake, hand_brake=hand_brake)
                 nested_car_carla.vehicle.apply_control(control)
+                if human_cruise_flag is True:
+                    human_cruise_flag = False
+                    control = carla.VehicleControl(throttle=0, steer=0, brake=0,
+                                                   hand_brake=0)
+                    human_car_carla.vehicle.apply_control(control)
                 carla_world.tick()
 
                 # Apply the control commands to the vehicle in Controller
@@ -111,31 +127,6 @@ for i in range(number_of_iterations):
                 sleep_time = dt - (time.time() - loop_time)
                 if sleep_time > 0:
                     time.sleep(sleep_time)
-            elif nested_car_carla.get_location().x <= 367:
-                if nested_car_carla.get_location().y > 0:
-                    if nested_car_carla.get_location().x >= 230 and nested_car_carla.get_location().x < 315:
-                        steering = -0.00001
-                    elif nested_car_carla.get_location().x > 315:
-                        steering = 0.00154
-                elif nested_car_carla.get_location().y < 0:
-                    steering = 0.0
-                current_speed = nested_car_carla.get_velocities().x
-                # Calculate the error (difference between current speed and target speed)
-                error = target_speed - current_speed
-                # Adjust throttle and brake based on the error
-                if error > 0:
-                    # Error is positive, accelerate
-                    throttle = min(1.0, error / 4.0)  # Adjust the division factor for smoother acceleration
-                elif error < 0:
-                    # Error is negative, brake
-                    brake = min(1.0, -error / 4.0)  # Adjust the division factor for smoother braking
-                # Apply control inputs
-                nested_car_carla.vehicle.apply_control(carla.VehicleControl(throttle=throttle, brake=brake, steer=steering))
-                carla_world.tick()
-                print("y position: ", nested_car_carla.get_location().y)
-                print("steering: ", steering)
-                print("throttle: ", throttle)
-                print("x position: ", nested_car_carla.get_location().x)
             x_positions_human_car.append(human_car_carla.get_location().x)
             y_positions_human_car.append(human_car_carla.get_location().y)
             x_positions_nested_car.append(nested_car_carla.get_location().x)
