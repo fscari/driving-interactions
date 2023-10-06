@@ -13,13 +13,13 @@ def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
     #                                          nested_car_carla.get_velocities().y, nested_car_carla.get_angular_velocities().z],
     #                                          color='blue', T=T)
 
-    humancar = car_class.UserControlledCar(dyn, [367, 1.75, math.radians(human_car_carla.get_rotation().yaw), 16.67,
+    humancar = car_class.UserControlledCar(dyn, [365, -1.75, math.radians(human_car_carla.get_rotation().yaw), 16.67,
                                              human_car_carla.get_velocities().y, human_car_carla.get_angular_velocities().z],
                                              color='yellow', T=T)
-    nestedcar = car_class.NestedOptimizerCar(dyn, [367, 2.2786035537719727, 0.0, 16.67,
+    nestedcar = car_class.NestedOptimizerCar(dyn, [365, 1.75, 0.0, 16.67,
                                              nested_car_carla.get_velocities().y, nested_car_carla.get_angular_velocities().z],
                                              color='blue', T=T)
-
+    # y = 2.2786035537719727
     experiment_env = world.World()
     experiment_env.cars.append(humancar)
     experiment_env.cars.append(nestedcar)

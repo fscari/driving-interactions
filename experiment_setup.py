@@ -4,6 +4,7 @@ from countdown import cntdwn
 from controller_init import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
+import class_av
 # from cruise_control import cruise_control
 
 
@@ -22,7 +23,7 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 # Saddigh
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
-theta =  [1, -60, 90, 8.5, -100.5]
+theta =  [10, -46.271, 90.15, 8.531, -100.604]
 # theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
 # theta = [100., -500., 10., 10., -60.]
 T = 10
@@ -75,7 +76,7 @@ for i in range(number_of_iterations):
                 start_time = time.time()
                 loop_time = start_time
                 start = True
-            if nested_car_carla.get_location().x >= 367:
+            if nested_car_carla.get_location().x >= 365:
                 loop_time = time.time()
                 nested_car.control(steering, throttle)
                 print("------------------------------")
@@ -111,12 +112,12 @@ for i in range(number_of_iterations):
                 sleep_time = dt - (time.time() - loop_time)
                 if sleep_time > 0:
                     time.sleep(sleep_time)
-            elif nested_car_carla.get_location().x <= 367:
+            elif nested_car_carla.get_location().x <= 365:
                 if nested_car_carla.get_location().y > 0:
                     if nested_car_carla.get_location().x >= 230 and nested_car_carla.get_location().x < 315:
-                        steering = -0.00001
+                        steering = 0.00001
                     elif nested_car_carla.get_location().x > 315:
-                        steering = 0.00154
+                        steering = -0.00154
                 elif nested_car_carla.get_location().y < 0:
                     steering = 0.0
                 current_speed = nested_car_carla.get_velocities().x
