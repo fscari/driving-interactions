@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def pltng_scene(vehicles_data, theta, title):
+
+def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
+    title = "Experiment Nr: " + str(experiment_nr) + "; Condition: " + condition_name + "; Iteration Nr: " + str(count)
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns
     # Left fence coordinates
@@ -21,7 +23,7 @@ def pltng_scene(vehicles_data, theta, title):
     middle_fence_r_x = [50, 365]
     middle_fence_r_y = [15.5, 0]
     # Plotting
-    ax1.plot(left_fence_x, left_fence_y, color='black') #label='Left Fence')
+    ax1.plot(left_fence_x, left_fence_y, color='black') # label='Left Fence')
     ax1.plot(right_fence_x0, right_fence_y0, color='black')  # label='Right Fence Segment 0'
     ax1.plot(right_fence_x1, right_fence_y1, color='black') # label='Right Fence Segment 1'
     ax1.plot(right_fence_x2, right_fence_y2, color='black') # label='Right Fence Segment 2'
@@ -48,8 +50,10 @@ def pltng_scene(vehicles_data, theta, title):
             filtered_x_positions_nestedcar.append(x_val)
             filtered_y_positions_nestedcar.append(y_val)
 
-    ax1.plot(filtered_x_positions_nestedcar[:], filtered_y_positions_nestedcar[:], color='green', label='nestedcar', linewidth=2)
-    ax1.plot(filtered_x_positions_humancar[:], filtered_y_positions_humancar[:], color='red', label='humancar', linewidth=2)
+    ax1.plot(filtered_x_positions_nestedcar[:], filtered_y_positions_nestedcar[:], color='green', label='nestedcar',
+             linewidth=2)
+    ax1.plot(filtered_x_positions_humancar[:], filtered_y_positions_humancar[:], color='red', label='humancar',
+             linewidth=2)
     # Additional plot settings
     ax1.set_xlabel('X Position')
     ax1.set_ylabel('Y Position')
@@ -83,7 +87,6 @@ def pltng_scene(vehicles_data, theta, title):
                 label='nestedcar', s=5)
     ax2.scatter(filtered_x_positions_humancar1[::2], filtered_y_positions_humancar1[::2], color='red',
                 label='nestedcar', s=5)
-
 
     # Additional plot settings
     ax2.set_xlabel('X Position')

@@ -2,36 +2,12 @@ import math
 import carla
 import pickle
 import os
+from create_waypoints import create_waypoints
 
 class AV:
     def __init__(self, carla_map, nested_car_carla, target_speed, look_ahead_dist):
-        # Define waypoints for the path
-        self.start_end = [carla.Location(50, 17.34), carla.Location(300, 3.5), carla.Location(350, 2),
-                     carla.Location(550, 1.75)]
-        waypoint = carla_map.get_waypoint(nested_car_carla.get_location())
-        distance_between_waypoints = 2
-        self.waypoints = []
-
-        filename = "waypoints.pkl"
-        if os.path.exists(filename):
-        # Load the list back from the file
-            with open(filename, 'rb') as file:
-                self.waypoints = pickle.load(file)
-        while waypoint.transform.location.distance(self.start_end[1]) > distance_between_waypoints:
-            # Move to the next waypoint
-            waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-            self.waypoints.append(waypoint)
-        while waypoint.transform.location.distance(self.start_end[2]) > distance_between_waypoints:
-            # Move to the next waypoint
-            waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-            self.waypoints.append(waypoint)
-        while waypoint.transform.location.distance(self.start_end[3]) > distance_between_waypoints:
-            # Move to the next waypoint
-            waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-            self.waypoints.append(waypoint)
-            # Save the list to a file
-        # with open(filename, 'wb') as file:
-        #     pickle.dump(self.waypoints, file)
+        # Create waypoints
+        self.waypoints = create_waypoints(carla_map, nested_car_carla)
         self.target_speed = target_speed
         self.look_ahead_dist = look_ahead_dist
         # errors
@@ -41,7 +17,7 @@ class AV:
         self.integral_yaw_error = 0
         self.max_integral_yaw_error = 4
         # PID constants for longitudinal control
-        self.KPT = 0.1
+        self.KPT = 1
         self.KIT = 0.1
         self.KDT = 1
         # PID constants for lateral control
@@ -89,8 +65,7 @@ class AV:
         return next_waypoint
 
     def control(self, nested_car_carla):
-        next_waypoint = self.get_next_waypoint(nested_car_carla.get_location(),)
-
+        next_waypoint = self.get_next_waypoint(nested_car_carla.get_location())
         if not next_waypoint:
             return 0, 0  # No control if no waypoints are found
         throttle = self.longitudinal_control(nested_car_carla.get_velocity())

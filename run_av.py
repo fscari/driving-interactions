@@ -13,14 +13,11 @@ def run_av(carla_world, human_car_carla, nested_car_carla, controller, vehicles_
             print("y position: ", nested_car_carla.get_location().y)
             print("steering: ", steering)
             print("throttle: ", throttle)
+            print("y velocity: ", nested_car_carla.get_velocities().y)
+            print("Yaw rate: ", nested_car_carla.get_angular_velocities().z)
             running = False
-        vehicle_location = nested_car_carla.get_location()
-        vehicle_rotation = nested_car_carla.get_rotation()
-        current_speed = nested_car_carla.get_velocity()
-        # current_speed = math.sqrt(vehicle_speed.x**2 + vehicle_speed.y**2 + vehicle_speed.z**2)
 
         throttle, steering = controller.control(nested_car_carla)
-
         # Apply control to the vehicle
         control = carla.VehicleControl(throttle=throttle, steer=steering)
         nested_car_carla.vehicle.apply_control(control)

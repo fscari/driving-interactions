@@ -1,5 +1,6 @@
 import carla
 import time
+import theano as th
 import pandas as pd
 from controller_init import cntrlr_init
 from plotting_scene import pltng_scene
@@ -7,13 +8,15 @@ from get_vehicles import gt_vhcl
 import class_av
 from run_av import run_av
 
+th.config.optimizer = 'fast_compile'
+th.config.mode = 'FAST_COMPILE'
 
 experiment_nr = 1
-number_of_iterations = 5
-title = "Experiment Nr: " + str(experiment_nr) + "; Iteration Nr: "
+number_of_iterations = 4
 
-target_speed = 16.67  # m/s
-look_ahead_dist = 15
+
+target_speed_forCC = 16.67  # m/s
+look_ahead_dist_forCC = 15
 # Connect to the CARLA server
 client = carla.Client('131.180.28.182', 2000)  # Use the correct IP address and port
 client.set_timeout(10.0)  # Set a timeout value
@@ -21,20 +24,27 @@ client.set_timeout(10.0)  # Set a timeout value
 carla_world = client.get_world()
 carla_map = carla_world.get_map()
 nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
-if nested_car_carla.get_location().y > 0:
-    controller = class_av.AV(carla_map, nested_car_carla, target_speed, look_ahead_dist)
-else:
-    controller = None
+
 # Saddigh
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
-theta =  [10, -46.271, 90.15, 8.531, -100.604]
+theta =  [10, -46.271, 90.15, 8.531, -80.604]
 # theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
-# theta = [100., -500., 10., 10., -60.]
 T = 10
 theta.append(T)
-human_car, nested_car = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
-nested_car_origin = nested_car
+humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
+
+if nested_car_carla.get_location().y < 0:
+    condition_name = 'AV_left'
+    condition_id = 0
+    controller = None
+else:
+    condition_name = 'AV_right'
+    condition_id = 1
+    controller = class_av.AV(carla_map, nested_car_carla, target_speed_forCC, look_ahead_dist_forCC)
+
+title = "Condition: " + condition_name + "; Experiment Nr: " + str(experiment_nr) + "; Iteration Nr: "
+
 
 hand_brake = False
 running = True
@@ -45,17 +55,33 @@ print(theta)
 steering = 0
 throttle = 0
 start_time = time.time()
-nested_car_origin.control(0.001685006396878057, 0.5)
+nestedcar_left.control(0.0, 0.0)
+nestedcar_right.control(0.001685006396878057, 0)
 done = False
+count_left = 0
+count_right = 0
+count = 0
 for i in range(number_of_iterations):
-    times = []
     vehicles_data = pd.DataFrame(columns=['times', 'x_positions_human_car', 'y_positions_human_car', 'x_positions_nested_car',
                                'y_positions_nested_car', 'steering_input'])
     input("Press Enter to start the experiment:")
-    if done:
-        nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
-        if nested_car_carla.get_location().y > 0:
-            controller = class_av.AV(carla_map, nested_car_carla, target_speed, look_ahead_dist)
+    nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
+    if nested_car_carla.get_location().y < 0:
+        controller = None
+        nested_car = nestedcar_left
+        human_car = humancar_right
+        condition_name = 'AV left'
+        condition_id = 0
+        count_left += 1
+        count = count_left
+    else:
+        controller = class_av.AV(carla_map, nested_car_carla, target_speed_forCC, look_ahead_dist_forCC)
+        nested_car = nestedcar_right
+        human_car = humancar_left
+        condition_name = 'AV right'
+        condition_id = 1
+        count_right += 1
+        count = count_right
     running = True
     first = True
     start = False
@@ -66,7 +92,6 @@ for i in range(number_of_iterations):
     while running:
         if nested_car_carla.get_location().x == 0:
             print("Cars were destroyed, waiting for new condition...")
-            done = True
             running = False
         if human_car_carla.get_velocities().x > 0 and human_car_carla.get_location().x >= 50:
             if start is False:
@@ -77,11 +102,7 @@ for i in range(number_of_iterations):
                 loop_time = time.time()
                 nested_car.control(steering, throttle)
                 print("------------------------------")
-                if first:
-                    first = False
-                    nested_car.optimizer = nested_car_origin.optimizer
-                else:
-                    nested_car.control(steering, throttle)
+                nested_car.control(steering, throttle)
                 u = nested_car.traj.u[0].get_value()
                 # Set control commands
                 steering = u[0]
@@ -110,7 +131,7 @@ for i in range(number_of_iterations):
                 if sleep_time > 0:
                     time.sleep(sleep_time)
             elif nested_car_carla.get_location().x <= 365:
-                if controller is not None:
+                if condition_id == 1:
                     vehicles_data = run_av(carla_world, human_car_carla, nested_car_carla, controller, vehicles_data)
 
             new_data = {
@@ -123,8 +144,7 @@ for i in range(number_of_iterations):
             }
             vehicles_data = pd.concat([vehicles_data, pd.DataFrame([new_data])], ignore_index=True)
     end_time = time.time()
-    controller = False
-    title = title + str(i)
-    pltng_scene(vehicles_data, theta, title)
-    title = title[:-1]
+    controller = None
+    pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count)
 print("Experiment finished!")
+
