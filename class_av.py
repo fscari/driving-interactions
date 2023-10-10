@@ -17,13 +17,16 @@ class AV:
         self.integral_yaw_error = 0
         self.max_integral_yaw_error = 4
         # PID constants for longitudinal control
-        self.KPT = 1
+        self.KPT = 10
         self.KIT = 0.1
         self.KDT = 1
         # PID constants for lateral control
         self.KPS = 0.001
-        self.KIS = 0.001
-        self.KDS = 0.01
+        self.KIS = 0.0001 #0.01
+        self.KDS = 1000
+        # self.KPS = 0.001
+        # self.KIS = 0.01
+        # self.KDS = 0.1
 
     def longitudinal_control(self, current_speed):
         error = self.target_speed - current_speed
@@ -34,22 +37,21 @@ class AV:
         derivative_error = error - self.prev_error
         throttle = self.KPT * error + self.KIT * self.integral_error + self.KDT * derivative_error
         self.prev_error = error
-        return min(max(throttle, 0), 0.7)  # Clamp between 0 and 1
+        return min(max(throttle, 0), 0.9)  # Clamp between 0 and 1
 
     def lateral_control(self, vehicle_location, vehicle_rotation, next_waypoint):
         # Calculate the desired heading using the lookahead point
         dx = next_waypoint.transform.location.x - vehicle_location.x
         dy = next_waypoint.transform.location.y - vehicle_location.y
+        # print("lateral offset: ", dy)
         desired_yaw = math.atan2(dy, dx)
         # Calculate the current vehicle heading
         vehicle_yaw = math.radians(vehicle_rotation.yaw)
-
         # Calculate the error between desired and current heading
         yaw_error = desired_yaw - vehicle_yaw
         yaw_error_rate = yaw_error - self.prev_yaw_error
         self.prev_yaw_error = yaw_error
         self.integral_yaw_error = min(max(self.integral_yaw_error, -self.max_integral_yaw_error), self.max_integral_yaw_error)
-        # steering = 0.0005 * yaw_error  # The factor 2.0 can be tuned
         steering = self.KPS * yaw_error + self.KIS * self.integral_yaw_error - self.KDS * yaw_error_rate
         return min(max(steering, -1), 1)  # Clamp between -1 and 1
 
