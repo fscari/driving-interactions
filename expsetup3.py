@@ -11,7 +11,13 @@ from run_av import run_av
 th.config.optimizer = 'fast_compile'
 th.config.mode = 'FAST_COMPILE'
 
-experiment_nr = 1
+try:
+    experiment_nr = int(input("Please enter the Experiment NR. (integer): "))
+    print(f"You entered: {experiment_nr}")
+except ValueError:
+    print("That's not a valid integer!")
+
+# experiment_nr = 1
 number_of_iterations = 4
 
 
@@ -28,11 +34,12 @@ nested_car_carla, human_car_carla = gt_vhcl(carla_world, carla_map)
 # Saddigh
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
-theta =  [10, -46.271, 90.15, 8.531, -80.604]
-# theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
+# theta =  [100, -1, 1, 1, -1]
+theta = [5, -46.271, 90.15, 8.531, -100.604] # works well with HR
 T = 10
 theta.append(T)
-humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, human_car_carla, nested_car_carla, theta, T)
+humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, human_car_carla, nested_car_carla,
+                                                                             theta, T)
 
 if nested_car_carla.get_location().y < 0:
     condition_name = 'AV_left'
@@ -98,7 +105,7 @@ for i in range(number_of_iterations):
                 start_time = time.time()
                 loop_time = start_time
                 start = True
-            if nested_car_carla.get_location().x >= 365:
+            if nested_car_carla.get_location().x >= 363:
                 loop_time = time.time()
                 nested_car.control(steering, throttle)
                 print("------------------------------")
@@ -130,7 +137,7 @@ for i in range(number_of_iterations):
                 sleep_time = dt - (time.time() - loop_time)
                 if sleep_time > 0:
                     time.sleep(sleep_time)
-            elif nested_car_carla.get_location().x <= 365:
+            elif nested_car_carla.get_location().x <= 363:
                 if condition_id == 1:
                     vehicles_data = run_av(carla_world, human_car_carla, nested_car_carla, controller, vehicles_data)
 
