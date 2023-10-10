@@ -4,17 +4,17 @@ import math
 
 def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
     dyn = dynamics.CarDynamics(dt)
-    humancar_right = car_class.UserControlledCar(dyn, [365, 1.75, math.radians(human_car_carla.get_rotation().yaw),
+    humancar_right = car_class.UserControlledCar(dyn, [363, 1.75, math.radians(human_car_carla.get_rotation().yaw),
                                                  16.67, human_car_carla.get_velocities().y,
                                                  human_car_carla.get_angular_velocities().z], color='yellow', T=T)
-    nestedcar_left = car_class.NestedOptimizerCar(dyn, [365, -1.75, math.radians(nested_car_carla.get_rotation().yaw),
+    nestedcar_left = car_class.NestedOptimizerCar(dyn, [363, -1.75, math.radians(nested_car_carla.get_rotation().yaw),
                                              16.67, nested_car_carla.get_velocities().y,
                                              nested_car_carla.get_angular_velocities().z], color='blue', T=T)
-    humancar_left= car_class.UserControlledCar(dyn, [365, -1.75, math.radians(human_car_carla.get_rotation().yaw),
+    humancar_left= car_class.UserControlledCar(dyn, [363, -1.75, math.radians(human_car_carla.get_rotation().yaw),
                                                  16.67, human_car_carla.get_velocities().y,
                                                  human_car_carla.get_angular_velocities().z], color='yellow', T=T)
-    nestedcar_right= car_class.NestedOptimizerCar(dyn, [365, 1.2, 0.0, 16.67, -0.7599689364433289,
-                                                   0.5028014779090881], color='blue', T=T)
+    nestedcar_right= car_class.NestedOptimizerCar(dyn, [363, 1.3, -2, 16.67, -0.2,
+                                                   0.5], color='blue', T=T)
     # y = 2.2786035537719727
 
     # Condition 0 Human right AV left
@@ -22,8 +22,8 @@ def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
     experiment_env_0.cars.append(humancar_right)
     experiment_env_0.cars.append(nestedcar_left)
     experiment_env_0.cars[1].human = experiment_env_0.cars[0]
-    clane1 = lane.StraightLane([360, -1.75], [800, -1.75], 3.5)
-    clane2 = lane.StraightLane([360, 1.75], [550, 1.75], 3.5)
+    clane1 = lane.StraightLane([350, -1.75], [800, -1.75], 3.5)
+    clane2 = lane.StraightLane([350, 1.75], [550, 1.75], 3.5)
     fakelane = lane.StraightLane([650, 1.75], [800, 1.75], 3.5)
     experiment_env_0.lanes += [clane1, clane2]
     experiment_env_0.roads += [clane1]
