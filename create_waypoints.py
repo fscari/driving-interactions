@@ -3,7 +3,7 @@ import carla
 
 def create_waypoints(carla_map, nested_car_carla):
     # Define waypoints for the path
-    start_end = [carla.Location(50, 17.34), carla.Location(300, 3.5), carla.Location(350, 2.5),
+    start_end = [carla.Location(nested_car_carla.get_location().x, nested_car_carla.get_location().y), carla.Location(300, 3.5), carla.Location(350, 4),
                  carla.Location(550, 1.75)]
     waypoint = carla_map.get_waypoint(nested_car_carla.get_location())
     distance_between_waypoints = 2
