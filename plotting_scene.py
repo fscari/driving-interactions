@@ -7,9 +7,8 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
     if not os.path.exists(folder_name):
         os.mkdir(folder_name)
     title = "Experiment Nr_" + str(experiment_nr) + "_Condition_" + condition_name + "_Iteration Nr_" + str(count)
-    filename_df = title + '.csv'
-    file_path = os.path.join(folder_name, filename_df)
-
+    file_path_csv = os.path.join(folder_name, title + '.csv')
+    file_path_plot = os.path.join(folder_name, title + '.png')
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns
     # Left fence coordinates
@@ -76,12 +75,12 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
     ax2.plot(right_fence_x2, right_fence_y2, color='black')  # label='Right Fence Segment 2'
     ax2.plot(right_fence_x3, right_fence_y3, color='black')  # label='Right Fence Segment 3'
 
-    nested_closest_position = min(filtered_x_positions_nestedcar, key=lambda x: abs(x - 367.0))
+    nested_closest_position = min(filtered_x_positions_nestedcar, key=lambda x: abs(x - 363.0))
     nested_index_of_367 = filtered_x_positions_nestedcar.index(nested_closest_position)
     filtered_x_positions_nestedcar1 = filtered_x_positions_nestedcar[nested_index_of_367:]
     filtered_y_positions_nestedcar1 = filtered_y_positions_nestedcar[nested_index_of_367:]
 
-    human_closest_position = min(filtered_x_positions_humancar, key=lambda x: abs(x - 367.0))
+    human_closest_position = min(filtered_x_positions_humancar, key=lambda x: abs(x - 363.0))
     human_index_of_367 = filtered_x_positions_humancar.index(human_closest_position)
     filtered_x_positions_humancar1 = filtered_x_positions_humancar[human_index_of_367:]
     filtered_y_positions_humancar1 = filtered_y_positions_humancar[human_index_of_367:]
@@ -101,8 +100,7 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
     ax2.grid(False)
     ax2.invert_yaxis()
     ax2.legend()
-    filename_img = title + '.png'
-    plt.savefig(filename_img)
+    plt.savefig(file_path_plot)
     plt.show()
 
-    vehicles_data.to_csv(file_path, index=False)
+    vehicles_data.to_csv(file_path_csv, index=False)
