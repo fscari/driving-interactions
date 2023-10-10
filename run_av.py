@@ -9,7 +9,7 @@ def run_av(carla_world, human_car_carla, nested_car_carla, controller, vehicles_
     steering = 0
     throttle = 0
     while running:
-        if nested_car_carla.get_location().x == 0 or run is False:
+        if nested_car_carla.get_location().x == 0:
             print("Cars were destroyed, waiting for new condition...")
             running = False
         if nested_car_carla.get_location().x >= 363:
