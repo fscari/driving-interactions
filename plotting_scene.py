@@ -1,9 +1,15 @@
-import numpy as np
+import os
 import matplotlib.pyplot as plt
 
 
 def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
-    title = "Experiment Nr: " + str(experiment_nr) + "; Condition: " + condition_name + "; Iteration Nr: " + str(count)
+    folder_name = "Experiment Nr_" + str(experiment_nr)
+    if not os.path.exists(folder_name):
+        os.mkdir(folder_name)
+    title = "Experiment Nr_" + str(experiment_nr) + "_Condition_" + condition_name + "_Iteration Nr_" + str(count)
+    filename_df = title + '.csv'
+    file_path = os.path.join(folder_name, filename_df)
+
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns
     # Left fence coordinates
@@ -98,5 +104,5 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
     filename_img = title + '.png'
     plt.savefig(filename_img)
     plt.show()
-    filename_df = title + '.csv'
-    vehicles_data.to_csv(filename_df, index=False)
+
+    vehicles_data.to_csv(file_path, index=False)
