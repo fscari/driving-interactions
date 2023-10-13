@@ -1,13 +1,11 @@
 import math
-import carla
-import pickle
-import os
 from create_waypoints import create_waypoints
 
 class AV:
     def __init__(self, carla_map, nested_car_carla, target_speed, look_ahead_dist):
         # Create waypoints
         self.waypoints = create_waypoints(carla_map, nested_car_carla)
+        self.used_waypoints = []
         self.target_speed = target_speed
         self.look_ahead_dist = look_ahead_dist
         # errors
@@ -21,12 +19,12 @@ class AV:
         self.KIT = 0.1
         self.KDT = 1
         # PID constants for lateral control
-        self.KPS = 0.001
-        self.KIS = 0.0001 #0.01
-        self.KDS = 1000
+        self.KPS = 0.01
+        self.KIS =  10000000 #0.0001 #0.01
+        self.KDS = 1000 #1000
         # self.KPS = 0.001
-        # self.KIS = 0.01
-        # self.KDS = 0.1
+        # self.KIS = 0.0001
+        # self.KDS = 1000
 
     def longitudinal_control(self, current_speed):
         error = self.target_speed - current_speed
@@ -41,6 +39,7 @@ class AV:
 
     def lateral_control(self, vehicle_location, vehicle_rotation, next_waypoint):
         # Calculate the desired heading using the lookahead point
+
         dx = next_waypoint.transform.location.x - vehicle_location.x
         dy = next_waypoint.transform.location.y - vehicle_location.y
         # print("lateral offset: ", dy)
@@ -52,7 +51,7 @@ class AV:
         yaw_error_rate = yaw_error - self.prev_yaw_error
         self.prev_yaw_error = yaw_error
         self.integral_yaw_error = min(max(self.integral_yaw_error, -self.max_integral_yaw_error), self.max_integral_yaw_error)
-        steering = self.KPS * yaw_error + self.KIS * self.integral_yaw_error - self.KDS * yaw_error_rate
+        steering = self.KPS * yaw_error + self.KIS * self.integral_yaw_error + self.KDS * yaw_error_rate
         return min(max(steering, -1), 1)  # Clamp between -1 and 1
 
     def get_next_waypoint(self, vehicle_location):
@@ -64,6 +63,7 @@ class AV:
             if distance < self.look_ahead_dist and distance < min_distance:
                 min_distance = distance
                 next_waypoint = waypoint
+                self.used_waypoints.append(next_waypoint)
         return next_waypoint
 
     def control(self, nested_car_carla):

@@ -15,8 +15,8 @@ KIT = 0.1
 KDT = 1
 # PID constants for lateral control
 KPS = 0.001
-KIS = 0.001
-KDS = 0.01
+KIS = 0.001 #0.001
+KDS = 0.01  #0.01
 
 class AV:
     def __init__(self):
@@ -76,42 +76,42 @@ class AV:
 
         return throttle, steering
 
-# Assuming you have a Carla client and vehicle actor
-client = carla.Client('131.180.28.182', 2000)  # Use the correct IP address and port
-client.set_timeout(10.0)  # Set a timeout value
-# Retrieve the list of vehicles
-carla_world = client.get_world()
-carla_map = carla_world.get_map()
-vehicle = carla_world.get_actors().filter('vehicle.*')
-nested_car_carla = joaninit.Vehicle(vehicle[0], carla_map)
-
-controller = AV()
-
-# Define waypoints for the path
-start_end = [carla.Location(50, 17.34), carla.Location(300, 3.5), carla.Location(350,1.75), carla.Location(550,1.75)]
-waypoint = carla_map.get_waypoint(nested_car_carla.get_location())
-distance_between_waypoints = 2
-waypoints = []
-filename = "waypoints.pkl"
-if os.path.exists(filename):
-    # Load the list back from the file
-    with open(filename, 'rb') as file:
-        waypoints = pickle.load(file)
-else:
-    while waypoint.transform.location.distance(start_end[1]) > distance_between_waypoints:
-        # Move to the next waypoint
-        waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-        waypoints.append(waypoint)
-    while waypoint.transform.location.distance(start_end[2]) > distance_between_waypoints:
-        # Move to the next waypoint
-        waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-        waypoints.append(waypoint)
-    while waypoint.transform.location.distance(start_end[3]) > distance_between_waypoints:
-    # Move to the next waypoint
-        waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
-        waypoints.append(waypoint)
-    with open(filename, 'wb') as file:
-        pickle.dump(waypoints, file)
+# # Assuming you have a Carla client and vehicle actor
+# client = carla.Client('131.180.28.182', 2000)  # Use the correct IP address and port
+# client.set_timeout(10.0)  # Set a timeout value
+# # Retrieve the list of vehicles
+# carla_world = client.get_world()
+# carla_map = carla_world.get_map()
+# vehicle = carla_world.get_actors().filter('vehicle.*')
+# nested_car_carla = joaninit.Vehicle(vehicle[0], carla_map)
+#
+# controller = AV()
+#
+# # Define waypoints for the path
+# start_end = [carla.Location(50, 17.34), carla.Location(300, 3.5), carla.Location(350,1.75), carla.Location(550,1.75)]
+# waypoint = carla_map.get_waypoint(nested_car_carla.get_location())
+# distance_between_waypoints = 2
+# waypoints = []
+# filename = "waypoints.pkl"
+# if os.path.exists(filename):
+#     # Load the list back from the file
+#     with open(filename, 'rb') as file:
+#         waypoints = pickle.load(file)
+# else:
+#     while waypoint.transform.location.distance(start_end[1]) > distance_between_waypoints:
+#         # Move to the next waypoint
+#         waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
+#         waypoints.append(waypoint)
+#     while waypoint.transform.location.distance(start_end[2]) > distance_between_waypoints:
+#         # Move to the next waypoint
+#         waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
+#         waypoints.append(waypoint)
+#     while waypoint.transform.location.distance(start_end[3]) > distance_between_waypoints:
+#     # Move to the next waypoint
+#         waypoint = carla_map.get_waypoint(waypoint.next(distance_between_waypoints)[0].transform.location)
+#         waypoints.append(waypoint)
+#     with open(filename, 'wb') as file:
+#         pickle.dump(waypoints, file)
 
 
 

@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 
 
-def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
+def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count, waypoints_x_locations=0, waypoints_y_locations=0, used_wayponts_x_location=0, used_wayponts_y_location=0):
     folder_name = "Experiment Nr_" + str(experiment_nr)
     if not os.path.exists(folder_name):
         os.mkdir(folder_name)
@@ -59,6 +59,9 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
              linewidth=2)
     ax1.plot(filtered_x_positions_humancar[:], filtered_y_positions_humancar[:], color='red', label='humancar',
              linewidth=2)
+    if waypoints_x_locations != 0 and waypoints_y_locations != 0:
+        ax1.plot(waypoints_x_locations[:], waypoints_y_locations[:], color='orange', label='waypoints',
+             linewidth=1)
     # Additional plot settings
     ax1.set_xlabel('X Position')
     ax1.set_ylabel('Y Position')
@@ -103,4 +106,11 @@ def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count):
     plt.savefig(file_path_plot)
     plt.show()
 
+    if used_wayponts_x_location != 0 and used_wayponts_y_location != 0:
+        y_error = [a - b for a, b in zip(used_wayponts_y_location, filtered_y_positions_nestedcar)]
+        plt.plot(y_error)
+        plt.show()
+        print(y_error)
+        # plt.plot(y_error, used_wayponts_y_location)
+        # plt.show()
     vehicles_data.to_csv(file_path_csv, index=False)
