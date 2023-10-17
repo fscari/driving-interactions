@@ -6,6 +6,8 @@ import numpy as np
 import time
 import sys
 import os
+import copy
+
 
 def extract(var):
     return th.function([], var, mode=th.compile.Mode(linker='py'))()
@@ -113,6 +115,36 @@ class NestedMaximizer(object):
             v.set_value(opt[a:b])
         self.maximize1()
 
+# Adding this to be able to deepcopy most of it
+    def customcopy(self, memo=None):
+        # Create a new instance of the class
+        new_instance = NestedMaximizer.__new__(NestedMaximizer)
+        if memo is None:
+            memo = {}
+        # Add the new instance to the memo dictionary to prevent infinite recursion
+        memo[id(self)] = new_instance
+
+        # Deep copy the attributes you need. For example:
+        new_instance.f1 = copy.deepcopy(self.f1)
+        new_instance.f2 = copy.deepcopy(self.f2)
+        new_instance.vs1 = copy.deepcopy(self.vs1)
+        new_instance.vs2 = copy.deepcopy(self.vs2)
+        new_instance.sz1 = copy.deepcopy(self.sz1)
+        new_instance.sz2 = copy.deepcopy(self.sz2)
+        new_instance.df1 = copy.deepcopy(self.df1)
+        new_instance.df2 = copy.deepcopy(self.df2)
+        new_instance.new_vs1 = copy.deepcopy(self.new_vs1)
+        new_instance.func1 = th.function(new_instance.new_vs1, [-new_instance.f1, -new_instance.df1],
+                                         givens=zip(new_instance.vs1, new_instance.new_vs1), on_unused_input='warn')
+        new_instance.func2 = th.function([], [-new_instance.f2, -new_instance.df2])
+        new_instance.f1_and_df1 = copy.deepcopy(self.f1_and_df1)
+        new_instance.f2_and_df2 = copy.deepcopy(self.f2_and_df2)
+
+        # Some attributes might need to be recreated or shallow copied. For example:
+        # new_instance.df1 = grad(new_instance.f1, new_instance.vs1)
+        # ... and so on for other attributes
+
+        return new_instance
 
 class Maximizer(object):
     def __init__(self, f, vs, g={}, pre=None, gen=None, method='bfgs', eps=1, iters=100000, debug=False, inf_ignore=np.inf):
