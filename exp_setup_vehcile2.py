@@ -103,7 +103,7 @@ for i in range(number_of_iterations):
                 human_car_carla.vehicle.set_autopilot(True)
                 autopilot_flag = True
                 start = True
-            if nested_car_carla.get_location().x >= 359 and nested_car_carla.get_location().x <= 599:
+            if nested_car_carla.get_location().x <= -359 and nested_car_carla.get_location().x >= -599:
                 if autopilot_flag:
                     nested_car_carla.vehicle.set_autopilot(False)
                     human_car_carla.vehicle.set_autopilot(False)
@@ -132,7 +132,7 @@ for i in range(number_of_iterations):
                 # if sleep_time > 0:
                 #     time.sleep(sleep_time)
                 # nested_car.control(steering, throttle)
-            elif nested_car_carla.get_location().x >= 600:
+            elif nested_car_carla.get_location().x <= -600:
                 nested_car_carla.vehicle.set_autopilot(True)
 
             new_data = {
@@ -144,7 +144,7 @@ for i in range(number_of_iterations):
                 'steering_input': steering
             }
             vehicles_data = pd.concat([vehicles_data, pd.DataFrame([new_data])], ignore_index=True)
-            if nested_car_carla.get_location().x and human_car_carla.get_location().x >= 350:
+            if nested_car_carla.get_location().x and human_car_carla.get_location().x <= -350:
                 # Apply the control commands to the vehicle in Controller
                 nested_car.move(nested_car_carla, human_car_carla)
                 human_car.move(human_car_carla)
