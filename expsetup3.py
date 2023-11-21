@@ -2,7 +2,7 @@ import carla
 import time
 import theano as th
 import pandas as pd
-from controller_init import cntrlr_init
+from controller_init_vehicle1 import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 import class_av

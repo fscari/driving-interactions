@@ -2,16 +2,25 @@ import sys
 import joaninit
 
 
-def gt_vhcl(carla_world, carla_map):
+def gt_vhcl(carla_world, carla_map, vehicle_nr):
     vehicle_list = carla_world.get_actors().filter('vehicle.*')
     if vehicle_list:
-        for vehicle in vehicle_list:
-            if vehicle.type_id == 'vehicle.hapticslab.nissannpc':
-                nested_car_carla = joaninit.Vehicle(vehicle, carla_map)
-            elif vehicle.type_id == 'vehicle.hapticslab.nissanego':
-                human_car_carla = joaninit.Vehicle(vehicle, carla_map)
-            else:
-                fede_car_carla = joaninit.Vehicle(vehicle, carla_map)
+        if vehicle_nr == 1:
+            for vehicle in vehicle_list:
+                if vehicle.type_id == 'vehicle.hapticslab.nissanlinux1':
+                    nested_car_carla = joaninit.Vehicle(vehicle, carla_map)
+                elif vehicle.type_id == 'vehicle.hapticslab.nissanego_fede':
+                    human_car_carla = joaninit.Vehicle(vehicle, carla_map)
+                else:
+                    fede_car_carla = joaninit.Vehicle(vehicle, carla_map)
+        elif vehicle_nr == 2:
+            for vehicle in vehicle_list:
+                if vehicle.type_id == 'vehicle.hapticslab.nissanlinux1':
+                    nested_car_carla = joaninit.Vehicle(vehicle, carla_map)
+                elif vehicle.type_id == 'vehicle.hapticslab.nissanego_fede':
+                    human_car_carla = joaninit.Vehicle(vehicle, carla_map)
+                else:
+                    fede_car_carla = joaninit.Vehicle(vehicle, carla_map)
     else:
         print("No vehicles found")
         sys.exit()

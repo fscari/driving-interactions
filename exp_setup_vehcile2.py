@@ -8,8 +8,7 @@ from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 
 sys.setrecursionlimit(5000)
-# th.config.optimizer = 'fast_compile'
-# th.config.mode = 'FAST_COMPILE'
+
 
 experiment_nr = 0
 try:
@@ -27,61 +26,69 @@ carla_world = client.get_world()
 carla_map = carla_world.get_map()
 traffic_manager = client.get_trafficmanager(8000)
 traffic_manager.global_percentage_speed_difference(-103)
-nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map)
+nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr=2)
 
 # Saddigh
 dt = 0.01
 # theta = [lanes, fances, road, speed, trajectoy.h]
-theta = [30, -15, 75, 1, -100]
-# theta = [30, -17, 75, 1, -100] #final?
-# theta = [10, -10, 20, 0.1, -10] # looks good
-# theta =  [10, -5, 80, 5, -200] # might be final one?
+theta = [30, -15, 75, 1, -100] # final?
 T = 10
 theta.append(T)
 humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, human_car_carla, nested_car_carla,
                                                                              theta, T)
-# print("theta: ", theta)
+# Initialisation
 steering = 0
 throttle = 0
-start_time = time.time()
+count_left = 0
+count_right = 0
 nestedcar_left.control(0.0, 0.0)
-# nestedcar_right.control(0.0, 0.0)
+nestedcar_right.control(0.0, 0.0)
+
+# I'll always start with the AV on the left
+nested_car = copy.copy(nestedcar_left)
+nested_car.optimizer = nestedcar_left.optimizer.customcopy()
+human_car = copy.deepcopy(humancar_right)
+condition_name = 'AV left'
+condition_id = 0
+count_left += 1
+count = count_left
+
+start_time = time.time()
 done = False
 first = True
 autopilot_flag = False
-count_left = 0
-count_right = 0
 count = 0
 for i in range(number_of_iterations):
     vehicles_data = pd.DataFrame(columns=['times', 'x_positions_human_car', 'y_positions_human_car',
                                           'x_positions_nested_car', 'y_positions_nested_car', 'steering_input'])
-    input("Press Enter to start the experiment:")
-    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map)
-    if nested_car_carla.get_location().y < 0:
-        nested_car = copy.copy(nestedcar_left)
-        # nested_car.optimizer = copy.copy(nestedcar_left.optimizer)
-        nested_car.optimizer = nestedcar_left.optimizer.customcopy()
-        human_car = copy.deepcopy(humancar_right)
-        condition_name = 'AV left'
-        condition_id = 0
-        count_left += 1
-        count = count_left
-        steering = 0.0
-        throttle = 0
-    else:
-        nested_car = copy.copy(nestedcar_right)
-        # nested_car.optimizer = copy.copy(nestedcar_right.optimizer)
-        nested_car.optimizer = nestedcar_right.optimizer.customcopy()
-        human_car = copy.deepcopy(humancar_left)
-        condition_name = 'AV right'
-        condition_id = 1
-        count_right += 1
-        count = count_right
-        steering = 0.0
-        throttle = 0
+    # input("Press Enter to initialise the experiment: ")
+    if first is not True:
+        first = False
+        if last_condition_name == 'AV right':
+            nested_car = copy.copy(nestedcar_left)
+            nested_car.optimizer = nestedcar_left.optimizer.customcopy()
+            human_car = copy.deepcopy(humancar_right)
+            condition_name = 'AV left'
+            condition_id = 0
+            count_left += 1
+            count = count_left
+            steering = 0.0
+            throttle = 0
+        elif last_condition_name == 'AV left':
+            nested_car = copy.copy(nestedcar_right)
+            nested_car.optimizer = nestedcar_right.optimizer.customcopy()
+            human_car = copy.deepcopy(humancar_left)
+            condition_name = 'AV right'
+            condition_id = 1
+            count_right += 1
+            count = count_right
+            steering = 0.0
+            throttle = 0
     running = True
     start = False
     brake = 0
+    input("Press Enter to load the experiment:")
+    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map)
     input("Press Enter to start the experiment:")
     while running:
         if nested_car_carla.get_location().x == 0:
@@ -103,7 +110,6 @@ for i in range(number_of_iterations):
                     autopilot_flag = False
                 loop_time = time.time()
                 nested_car.control(steering, throttle)
-                print("------------------------------")
                 u = nested_car.traj.u[0].get_value()
                 # Set control commands
                 steering = u[0]
@@ -121,12 +127,6 @@ for i in range(number_of_iterations):
                 # Apply the control commands to the vehicle in Controller
                 nested_car.move(nested_car_carla, human_car_carla)
                 human_car.move(human_car_carla)
-
-                print("input: ")
-                print(steering, throttle)
-                print("state: ")
-                print(nested_car_carla.get_location().x, nested_car_carla.get_location().y,
-                      nested_car_carla.get_rotation().yaw, nested_car_carla.get_velocity())
 
                 sleep_time = dt - (time.time() - loop_time)
                 # if sleep_time > 0:
@@ -151,7 +151,7 @@ for i in range(number_of_iterations):
     end_time = time.time()
     nested_car = None
     human_car = None
-    last_conditionname = condition_name
+    last_condition_name = condition_name
     first = False
     pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count)
 print("Experiment finished!")

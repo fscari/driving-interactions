@@ -1,7 +1,7 @@
 import carla
 import time
 from countdown import cntdwn
-from controller_init import cntrlr_init
+from controller_init_vehicle1 import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 

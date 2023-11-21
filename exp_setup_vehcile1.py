@@ -3,7 +3,7 @@ import time
 import copy
 import sys
 import pandas as pd
-from controller_init import cntrlr_init
+from controller_init_vehicle1 import cntrlr_init
 from plotting_scene import pltng_scene
 from get_vehicles import gt_vhcl
 
@@ -26,7 +26,7 @@ carla_world = client.get_world()
 carla_map = carla_world.get_map()
 traffic_manager = client.get_trafficmanager(8000)
 traffic_manager.global_percentage_speed_difference(-103)
-nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map)
+nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr=1)
 
 # Saddigh
 dt = 0.01
