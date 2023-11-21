@@ -20,7 +20,7 @@ except ValueError:
 number_of_iterations = 10
 
 # Connect to the CARLA server
-client = carla.Client('131.180.28.182', 2000)  # Use the correct IP address and port
+client = carla.Client('131.180.29.232', 2000)  # Use the correct IP address and port
 client.set_timeout(10.0)  # Set a timeout value
 carla_world = client.get_world()
 carla_map = carla_world.get_map()
@@ -88,7 +88,7 @@ for i in range(number_of_iterations):
     start = False
     brake = 0
     input("Press Enter to load the experiment:")
-    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map)
+    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr=1)
     input("Press Enter to start the experiment:")
     while running:
         if nested_car_carla.get_location().x == 0:

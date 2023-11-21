@@ -17,7 +17,7 @@ def gt_vhcl(carla_world, carla_map, vehicle_nr):
             for vehicle in vehicle_list:
                 if vehicle.type_id == 'vehicle.hapticslab.nissanlinux1':
                     nested_car_carla = joaninit.Vehicle(vehicle, carla_map)
-                elif vehicle.type_id == 'vehicle.hapticslab.nissanego_fede':
+                elif vehicle.type_id == 'vehicle.hapticslab.nissannpc_fede':
                     human_car_carla = joaninit.Vehicle(vehicle, carla_map)
                 else:
                     fede_car_carla = joaninit.Vehicle(vehicle, carla_map)
