@@ -18,6 +18,7 @@ except ValueError:
     print("That's not a valid integer!")
 
 number_of_iterations = 10
+vehicle_nr = 2
 
 # Connect to the CARLA server
 client = carla.Client('131.180.29.232', 2000)  # Use the correct IP address and port
@@ -26,7 +27,7 @@ carla_world = client.get_world()
 carla_map = carla_world.get_map()
 traffic_manager = client.get_trafficmanager(8000)
 traffic_manager.global_percentage_speed_difference(-103)
-nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr=2)
+nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
 
 # Saddigh
 dt = 0.01
@@ -88,7 +89,7 @@ for i in range(number_of_iterations):
     start = False
     brake = 0
     input("Press Enter to load the experiment:")
-    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr=2)
+    nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
     input("Press Enter to start the experiment:")
     while running:
         if nested_car_carla.get_location().x == 0:

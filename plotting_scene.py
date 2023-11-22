@@ -2,11 +2,11 @@ import os
 import matplotlib.pyplot as plt
 
 
-def pltng_scene(vehicles_data, theta, condition_name, experiment_nr, count, waypoints_x_locations=0, waypoints_y_locations=0, used_wayponts_x_location=0, used_wayponts_y_location=0):
+def pltng_scene(vehicles_data, theta, vehicle_nr, condition_name, experiment_nr, count, waypoints_x_locations=0, waypoints_y_locations=0, used_wayponts_x_location=0, used_wayponts_y_location=0):
     folder_name = "Experiment Nr_" + str(experiment_nr)
     if not os.path.exists(folder_name):
         os.mkdir(folder_name)
-    title = "Experiment Nr_" + str(experiment_nr) + "_Condition_" + condition_name + "_Iteration Nr_" + str(count)
+    title = "Experiment Nr_" + str(experiment_nr) + "_Vehicle_NR_" + vehicle_nr + "_Condition_" + condition_name + "_Iteration Nr_" + str(count)
     file_path_csv = os.path.join(folder_name, title + '.csv')
     file_path_plot = os.path.join(folder_name, title + '.png')
     # Create a figure with two subplots
