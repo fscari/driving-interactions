@@ -153,5 +153,5 @@ for i in range(number_of_iterations):
     human_car = None
     last_condition_name = condition_name
     first = False
-    # pltng_scene(vehicles_data, theta, vehicle_nr, condition_name, experiment_nr, count)
+    pltng_scene(vehicles_data, theta, vehicle_nr, condition_name, experiment_nr, count)
 print("Experiment finished!")
