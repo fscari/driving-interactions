@@ -2,7 +2,7 @@ import dynamics, lane, car_class, feature, world
 import math
 
 
-def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
+def cntrlr_init(dt, theta_set, T):
     dyn = dynamics.CarDynamics(dt)
     humancar_right = car_class.UserControlledCar(dyn, [-360, -1.75, 0.0, 16.67, 0.0, 0.0], color='yellow', T=T)
     nestedcar_left = car_class.NestedOptimizerCar(dyn, [-360, 1.75, 0.0, 16.67, 0.0, 0.0], color='blue', T=T)
@@ -25,7 +25,6 @@ def cntrlr_init(dt, human_car_carla, nested_car_carla, theta_set, T):
     r_h = experiment_env_0.simple_reward([nestedcar_left.traj], theta) + 100. * feature.bounded_control(humancar_right.bounds)
     r_r = experiment_env_0.simple_reward(nestedcar_left, theta, speed=16.67)
     experiment_env_0.cars[1].rewards = (r_h, r_r)
-
 
     # Condition 1 Human left AV right
     experiment_env_1 = world.World()

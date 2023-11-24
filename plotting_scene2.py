@@ -12,21 +12,21 @@ def pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, exper
     # Create a figure with two subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))  # 1 row, 2 columns
     # Left fence coordinates
-    left_fence_x = [50, 800]
-    left_fence_y = [-3.5, -3.5]
+    left_fence_x = [-50, -800]
+    left_fence_y = [3.5, 3.5]
     # Right fence coordinates
-    right_fence_x0 = [50, 365]
-    right_fence_y0 = [19.2, 3.5]
-    right_fence_x1 = [365, 550]
-    right_fence_y1 = [3.5, 3.5]
-    right_fence_x2 = [550, 600]
-    right_fence_y2 = [3.5, 0]
-    right_fence_x3 = [600, 800]
+    right_fence_x0 = [-50, -365]
+    right_fence_y0 = [-19.2, -3.5]
+    right_fence_x1 = [-365, -550]
+    right_fence_y1 = [-3.5, -3.5]
+    right_fence_x2 = [-550, -600]
+    right_fence_y2 = [-3.5, 0]
+    right_fence_x3 = [-600, -800]
     right_fence_y3 = [0, 0]
-    middle_fence_l_x = [50, 365]
+    middle_fence_l_x = [-50, -365]
     middle_fence_l_y = [0, 0]
-    middle_fence_r_x = [50, 365]
-    middle_fence_r_y = [15.5, 0]
+    middle_fence_r_x = [-50, -365]
+    middle_fence_r_y = [-15.5, 0]
     # Plotting
     ax1.plot(left_fence_x, left_fence_y, color='black') # label='Left Fence')
     ax1.plot(right_fence_x0, right_fence_y0, color='black')  # label='Right Fence Segment 0'
@@ -70,7 +70,7 @@ def pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, exper
     ax1.invert_yaxis()
     ax1.legend()
 
-    left_fence_x1 = [360, 800]
+    left_fence_x1 = [-360, -800]
 
 # Scatterplot for velocities
     ax2.plot(left_fence_x1, left_fence_y, color='black')  # label='Left Fence')

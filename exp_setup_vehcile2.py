@@ -3,23 +3,23 @@ import time
 import copy
 import sys
 import pandas as pd
-from controller_init_vehicle1 import cntrlr_init
-from plotting_scene import pltng_scene
+from controller_init_vehicle2 import cntrlr_init
+from plotting_scene2 import pltng_scene
 from get_vehicles import gt_vhcl
 
 sys.setrecursionlimit(5000)
 
-
 experiment_nr = 0
+session = 0
 try:
     experiment_nr = int(input("Please enter the Experiment NR. (integer): "))
+    session = int(input("Please enter the Experiment NR. (integer): "))
     print(f"You entered: {experiment_nr}")
 except ValueError:
     print("That's not a valid integer!")
 
 number_of_iterations = 10
 vehicle_nr = 2
-
 # Connect to the CARLA server
 client = carla.Client('131.180.29.232', 2000)  # Use the correct IP address and port
 client.set_timeout(10.0)  # Set a timeout value
@@ -27,7 +27,7 @@ carla_world = client.get_world()
 carla_map = carla_world.get_map()
 traffic_manager = client.get_trafficmanager(8000)
 traffic_manager.global_percentage_speed_difference(-103)
-nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
+# nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
 
 # Saddigh
 dt = 0.01
@@ -35,8 +35,7 @@ dt = 0.01
 theta = [30, -15, 75, 1, -100] # final?
 T = 10
 theta.append(T)
-humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, human_car_carla, nested_car_carla,
-                                                                             theta, T)
+humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, theta, T)
 # Initialisation
 steering = 0
 throttle = 0
@@ -52,7 +51,7 @@ human_car = copy.deepcopy(humancar_right)
 condition_name = 'AV left'
 condition_id = 0
 count_left += 1
-count = count_left
+# count = count_left
 
 start_time = time.time()
 done = False
@@ -65,7 +64,7 @@ for i in range(number_of_iterations):
     # input("Press Enter to initialise the experiment: ")
     if first is not True:
         first = False
-        if last_condition_name == 'AV right':
+        if i == 3 or i == 5 or i ==7 or i == 8:
             nested_car = copy.copy(nestedcar_left)
             nested_car.optimizer = nestedcar_left.optimizer.customcopy()
             human_car = copy.deepcopy(humancar_right)
@@ -75,7 +74,7 @@ for i in range(number_of_iterations):
             count = count_left
             steering = 0.0
             throttle = 0
-        elif last_condition_name == 'AV left':
+        elif i == 1 or i == 2 or i == 4 or i == 6 or i == 9:
             nested_car = copy.copy(nestedcar_right)
             nested_car.optimizer = nestedcar_right.optimizer.customcopy()
             human_car = copy.deepcopy(humancar_left)
@@ -154,5 +153,5 @@ for i in range(number_of_iterations):
     human_car = None
     last_condition_name = condition_name
     first = False
-    pltng_scene(vehicles_data, theta, vehicle_nr, condition_name, experiment_nr, count)
+    pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, experiment_nr, count)
 print("Experiment finished!")
