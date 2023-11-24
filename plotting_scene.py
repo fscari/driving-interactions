@@ -104,7 +104,7 @@ def pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, exper
     ax2.invert_yaxis()
     ax2.legend()
     plt.savefig(file_path_plot)
-    plt.show()
+    # plt.show()
 
     if used_wayponts_x_location != 0 and used_wayponts_y_location != 0:
         y_error = [a - b for a, b in zip(used_wayponts_y_location, filtered_y_positions_nestedcar)]
