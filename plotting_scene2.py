@@ -78,12 +78,12 @@ def pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, exper
     ax2.plot(right_fence_x2, right_fence_y2, color='black')  # label='Right Fence Segment 2'
     ax2.plot(right_fence_x3, right_fence_y3, color='black')  # label='Right Fence Segment 3'
 
-    nested_closest_position = min(filtered_x_positions_nestedcar, key=lambda x: abs(x - 363.0))
+    nested_closest_position = min(filtered_x_positions_nestedcar, key=lambda x: abs(x + 363.0))
     nested_index_of_367 = filtered_x_positions_nestedcar.index(nested_closest_position)
     filtered_x_positions_nestedcar1 = filtered_x_positions_nestedcar[nested_index_of_367:]
     filtered_y_positions_nestedcar1 = filtered_y_positions_nestedcar[nested_index_of_367:]
 
-    human_closest_position = min(filtered_x_positions_humancar, key=lambda x: abs(x - 363.0))
+    human_closest_position = min(filtered_x_positions_humancar, key=lambda x: abs(x + 363.0))
     human_index_of_367 = filtered_x_positions_humancar.index(human_closest_position)
     filtered_x_positions_humancar1 = filtered_x_positions_humancar[human_index_of_367:]
     filtered_y_positions_humancar1 = filtered_y_positions_humancar[human_index_of_367:]
