@@ -14,12 +14,6 @@ def main(n1, n2):
 
     experiment_nr = n1
     session = n2
-    # try:
-    #     experiment_nr = int(input("Please enter the Experiment NR. (integer): "))
-    #     print(f"You entered: {experiment_nr}")
-    #     session = int(input("Please enter the Experiment NR. (integer): "))
-    # except ValueError:
-    #     print("That's not a valid integer!")
 
     number_of_iterations = 10
     vehicle_nr = 1
