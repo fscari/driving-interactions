@@ -127,7 +127,7 @@ def main(n1, n2):
                     # if sleep_time > 0:
                     #     time.sleep(sleep_time)
                     # nested_car.control(steering, throttle)
-                elif nested_car_carla.get_location().x <= -600:
+                elif nested_car_carla.get_location().x <= -550:
                     nested_car_carla.vehicle.set_autopilot(True)
 
                 new_data = {
