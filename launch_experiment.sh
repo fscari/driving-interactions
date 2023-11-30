@@ -15,6 +15,6 @@ fi
 #python3 exp_setup_vehicle2.py "$exp_nr" "$session_nr"
 
 # Run scripts in new terminal windows
-gnome-terminal -- python3 exp_setup_vehicle1.py "$exp_nr" "$session_nr"
-sleep 1
-gnome-terminal -- python3 exp_setup_vehicle2.py "$exp_nr" "$session_nr"
+gnome-terminal -- python3 exp_setup_vehicle1.py "$exp_nr" "$session_nr" > tmp1.txt
+#sleep 2
+gnome-terminal -- python3 exp_setup_vehicle2.py "$exp_nr" "$session_nr" > tmp2.txt

@@ -41,10 +41,43 @@ def main(n1, n2):
     nestedcar_left.control(0.0, 0.0)
     nestedcar_right.control(0.0, 0.0)
 
+    # Initialize lists to hold the copies
+    nestedcar_left_copies = []
+    nestedcar_right_copies = []
+    humancar_left_copies = []
+    humancar_right_copies = []
+
+    nestedcar_left_copies.append(nestedcar_left)
+    nestedcar_right_copies.append(nestedcar_right)
+    humancar_left_copies.append(humancar_left)
+    humancar_right_copies.append(humancar_right)
+    # Creating 10 copies of each initialized object
+    for i in range(2, 6):
+        # For nestedcar_left
+        temp_nestedcar_left = copy.copy(nestedcar_left)
+        temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
+        nestedcar_left_copies.append(temp_nestedcar_left)
+
+        # For nestedcar_right
+        temp_nestedcar_right = copy.copy(nestedcar_right)
+        temp_nestedcar_right.optimizer = nestedcar_right.optimizer.customcopy()
+        nestedcar_right_copies.append(temp_nestedcar_right)
+
+        # For humancar_left
+        temp_humancar_left = copy.deepcopy(humancar_left)
+        humancar_left_copies.append(temp_humancar_left)
+
+        # For humancar_right
+        temp_humancar_right = copy.deepcopy(humancar_right)
+        humancar_right_copies.append(temp_humancar_right)
+
+        print("-----------------------")
+        print(i)
+        print("-----------------------")
+
     # I'll always start with the AV on the left
-    nested_car = copy.copy(nestedcar_left)
-    nested_car.optimizer = nestedcar_left.optimizer.customcopy()
-    human_car = copy.deepcopy(humancar_right)
+    nested_car = nestedcar_left_copies[0]
+    human_car = humancar_right_copies[0]
     condition_name = 'AV left'
     condition_id = 0
     count_left += 1
@@ -62,9 +95,8 @@ def main(n1, n2):
         if first is not True:
             first = False
             if i == 3 or i == 5 or i ==7 or i == 8:
-                nested_car = copy.copy(nestedcar_left)
-                nested_car.optimizer = nestedcar_left.optimizer.customcopy()
-                human_car = copy.deepcopy(humancar_right)
+                nested_car = nestedcar_left_copies[count_left]
+                human_car = humancar_right_copies[count_left]
                 condition_name = 'AV left'
                 condition_id = 0
                 count_left += 1
@@ -72,9 +104,8 @@ def main(n1, n2):
                 steering = 0.0
                 throttle = 0
             elif i == 1 or i == 2 or i == 4 or i == 6 or i == 9:
-                nested_car = copy.copy(nestedcar_right)
-                nested_car.optimizer = nestedcar_right.optimizer.customcopy()
-                human_car = copy.deepcopy(humancar_left)
+                nested_car = nestedcar_right_copies[count_right]
+                human_car = humancar_left_copies[count_right]
                 condition_name = 'AV right'
                 condition_id = 1
                 count_right += 1
@@ -95,7 +126,7 @@ def main(n1, n2):
                 nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl_M(carla_world, carla_map, vehicle_nr)
             else:
                 nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
-        input("Press Enter to start the experiment:")
+        # input("Press Enter to start the experiment:")
         while running:
             if nested_car_carla.get_location().x == 0:
                 print("Cars were destroyed, waiting for new condition...")
@@ -105,7 +136,7 @@ def main(n1, n2):
                     start_time = time.time()
                     loop_time = start_time
                     nested_car_carla.vehicle.set_autopilot(True)
-                    time.sleep(0.17)
+                    # time.sleep(0.17)
                     human_car_carla.vehicle.set_autopilot(True)
                     autopilot_flag = True
                     start = True
