@@ -29,8 +29,8 @@ def main(n1, n2):
     # Saddigh
     dt = 0.01
     # theta = [lanes, fances, road, speed, trajectoy.h]
-    # theta = [30, -15, 75, 1, -100] # final? used in pilot 1
-    theta = [30, -10, 75, 1, -50]  # test?
+    theta = [30, -10, 75, 1, -50]  # final?
+    # theta = [30, -15, 75, 1, -100] # used in pilot 1
     T = 10
     theta.append(T)
     humancar_right, nestedcar_left, humancar_left, nestedcar_right = cntrlr_init(dt, theta, T)
@@ -52,7 +52,7 @@ def main(n1, n2):
     humancar_left_copies.append(humancar_left)
     humancar_right_copies.append(humancar_right)
     # Creating 10 copies of each initialized object
-    for i in range(4):
+    for i in range(1):
         # For nestedcar_left
         temp_nestedcar_left = copy.copy(nestedcar_left)
         temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
