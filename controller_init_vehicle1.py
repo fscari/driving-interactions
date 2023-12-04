@@ -7,7 +7,7 @@ def cntrlr_init(dt, theta_set, T):
     humancar_right = car_class.UserControlledCar(dyn, [360, 1.75, 0.0, 16.67, 0.0, 0.0], color='yellow', T=T)
     nestedcar_left = car_class.NestedOptimizerCar(dyn, [360, -1.75, 0.0, 16.67, 0.0, 0.0], color='blue', T=T)
     humancar_left = car_class.UserControlledCar(dyn, [360, -1.75, 0.0, 16.67, 0.0, 0.0], color='yellow', T=T)
-    nestedcar_right = car_class.NestedOptimizerCar(dyn, [360, 2.00, -1.43, 16.67, -0.40, 0.83], color='blue', T=T)
+    nestedcar_right = car_class.NestedOptimizerCar(dyn, [360, 1.75, -1.43, 16.67, -0.40, 0.83], color='blue', T=T)
     # nestedcar_right = car_class.NestedOptimizerCar(dyn, [363, 1.5, -2, 16.67, -0.2,
     #                                                0.5], color='blue', T=T)
     # y = 2.2786035537719727
