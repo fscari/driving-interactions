@@ -52,7 +52,7 @@ def main(n1, n2):
     humancar_left_copies.append(humancar_left)
     humancar_right_copies.append(humancar_right)
     # Creating 10 copies of each initialized object
-    for i in range(1):
+    for i in range(3):
         # For nestedcar_left
         temp_nestedcar_left = copy.copy(nestedcar_left)
         temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
@@ -135,9 +135,9 @@ def main(n1, n2):
                 if start is False:
                     start_time = time.time()
                     loop_time = start_time
+                    human_car_carla.vehicle.set_autopilot(True)
                     nested_car_carla.vehicle.set_autopilot(True)
                     # time.sleep(0.17)
-                    human_car_carla.vehicle.set_autopilot(True)
                     autopilot_flag = True
                     start = True
                 if nested_car_carla.get_location().x <= -359 and nested_car_carla.get_location().x > -560:
@@ -190,7 +190,7 @@ def main(n1, n2):
         human_car = None
         last_condition_name = condition_name
         first = False
-        pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, experiment_nr, count)
+        # pltng_scene(vehicles_data, theta, session, vehicle_nr, condition_name, experiment_nr, count)
     print("Experiment finished!")
 
 if __name__ == '__main__':
