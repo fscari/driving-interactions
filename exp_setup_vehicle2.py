@@ -41,6 +41,7 @@ def main(n1, n2):
     count_right = 0
     nestedcar_left.control(0.0, 0.0)
     nestedcar_right.control(0.0, 0.0)
+
     # Initialize lists to hold the copies
     nestedcar_left_copies = []
     nestedcar_right_copies = []
@@ -52,7 +53,7 @@ def main(n1, n2):
     humancar_left_copies.append(humancar_left)
     humancar_right_copies.append(humancar_right)
     # Creating 10 copies of each initialized object
-    for i in range(3):
+    for i in range(0):
         # For nestedcar_left
         temp_nestedcar_left = copy.copy(nestedcar_left)
         temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
@@ -80,6 +81,7 @@ def main(n1, n2):
 
     condition_name = 'AV left'
     condition_id = 0
+    condition_M = 0
     count_left += 1
     # count = count_left
 
@@ -92,22 +94,27 @@ def main(n1, n2):
         vehicles_data = pd.DataFrame(columns=['times', 'x_positions_human_car', 'y_positions_human_car',
                                               'x_positions_nested_car', 'y_positions_nested_car', 'steering_input'])
         # input("Press Enter to initialise the experiment: ")
+        input("Press Enter to load the experiment: ")
+        nested_car_carla, human_car_carla, fede_car_carla, condition_id, condition_M = gt_vhcl(carla_world, carla_map,
+                                                                                               vehicle_nr)
         if first is not True:
             first = False
-            if i == 3 or i == 5 or i ==7 or i == 8:
+            # if i == 3 or i == 5 or i ==7 or i == 8:
+            if condition_id == 0:
                 nested_car = nestedcar_left_copies[count_left]
                 human_car = humancar_right_copies[count_left]
                 condition_name = 'AV left'
-                condition_id = 0
+                # condition_id = 0
                 count_left += 1
                 count = count_left
                 steering = 0.0
                 throttle = 0
-            elif i == 1 or i == 2 or i == 4 or i == 6 or i == 9:
+            # elif i == 1 or i == 2 or i == 4 or i == 6 or i == 9:
+            elif condition_id == 1:
                 nested_car = nestedcar_right_copies[count_right]
                 human_car = humancar_left_copies[count_right]
                 condition_name = 'AV right'
-                condition_id = 1
+                # condition_id = 1
                 count_right += 1
                 count = count_right
                 steering = 0.0
@@ -115,18 +122,20 @@ def main(n1, n2):
         running = True
         start = False
         brake = 0
-        input("Press Enter to load the experiment:")
-        if session == 1:
-            if i == 2 or i == 5 or i == 6 or i == 8 or i == 9:
-                nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl_M(carla_world, carla_map, vehicle_nr)
-            else:
-                nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
-        elif session == 2:
-            if i == 0 or i == 1 or i == 3 or i == 4 or i == 7:
-                nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl_M(carla_world, carla_map, vehicle_nr)
-            else:
-                nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
+        # input("Press Enter to load the experiment:")
+        # if session == 1:
+        #     if i == 2 or i == 5 or i == 6 or i == 8 or i == 9:
+        #         nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl_M(carla_world, carla_map, vehicle_nr)
+        #     else:
+        #         nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
+        # elif session == 2:
+        #     if i == 0 or i == 1 or i == 3 or i == 4 or i == 7:
+        #         nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl_M(carla_world, carla_map, vehicle_nr)
+        #     else:
+        #         nested_car_carla, human_car_carla, fede_car_carla = gt_vhcl(carla_world, carla_map, vehicle_nr)
         # input("Press Enter to start the experiment:")
+        print(condition_id)
+        print(condition_M)
         while running:
             if nested_car_carla.get_location().x == 0:
                 print("Cars were destroyed, waiting for new condition...")
@@ -135,7 +144,7 @@ def main(n1, n2):
                 if start is False:
                     start_time = time.time()
                     loop_time = start_time
-                    human_car_carla.vehicle.set_autopilot(True)
+                    # human_car_carla.vehicle.set_autopilot(True)
                     nested_car_carla.vehicle.set_autopilot(True)
                     # time.sleep(0.17)
                     autopilot_flag = True
