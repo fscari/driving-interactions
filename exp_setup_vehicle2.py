@@ -53,7 +53,7 @@ def main(n1, n2):
     humancar_left_copies.append(humancar_left)
     humancar_right_copies.append(humancar_right)
     # Creating 10 copies of each initialized object
-    for i in range(0):
+    for i in range(4):
         # For nestedcar_left
         temp_nestedcar_left = copy.copy(nestedcar_left)
         temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
