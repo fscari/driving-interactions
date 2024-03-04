@@ -18,7 +18,7 @@ def main(n1, n2):
     number_of_iterations = 10
     vehicle_nr = 1
     # Connect to the CARLA server
-    client = carla.Client('131.180.29.232', 2000)  # Use the correct IP address and port
+    client = carla.Client('131.180.28.243', 2000)  # Use the correct IP address and port
     client.set_timeout(10.0)  # Set a timeout value
     carla_world = client.get_world()
     carla_map = carla_world.get_map()
@@ -53,7 +53,7 @@ def main(n1, n2):
     humancar_left_copies.append(humancar_left)
     humancar_right_copies.append(humancar_right)
     # Creating 10 copies of each initialized object
-    for i in range(4):
+    for i in range(5):
         # For nestedcar_left
         temp_nestedcar_left = copy.copy(nestedcar_left)
         temp_nestedcar_left.optimizer = nestedcar_left.optimizer.customcopy()
